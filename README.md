@@ -6,7 +6,9 @@ Code for identifying regions of the genome that are unstable when converting bet
 # 2 Set Up
 ## 2.1 Installation
 Download the resource material 
-`git clone https://github.com/cathaloruaidh/genomeBuildConversion.git`
+```
+git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
+```
 
 
 ## 2.2 Initialisation
