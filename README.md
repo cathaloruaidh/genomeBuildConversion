@@ -35,7 +35,8 @@ mkdir CHR/hg19 CHR/GRCh38;
 
 ## Resrequisites/Notes
 - To be installed: `liftOver`, `CrossMap` and `bedtools`. 
-- The reference file directory is ~6GB in size. 
+- Reference FASTA files are not included due to file size, but are required for the 
+- This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
 - The input BED files for the full-genome search are ~150GB in size. 
 
 
