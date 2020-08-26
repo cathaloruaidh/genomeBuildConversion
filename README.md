@@ -47,8 +47,24 @@ Generate the input BED files for the conversion process.
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome. 
 
 Run for hg19: 
-```cd hg19 ; 
-date ; while IFS="" read -r LINE || [[ -n "${LINE}" ]] ; do  CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;  START=$( echo ${LINE} | cut -f2 -d ' '  ) ;  END=$( echo ${LINE} | cut -f3 -d ' '  ) ; mkdir FASTA_BED.${CHR} ; time for (( i=${START}; i<${END}; i++ )) ; do echo -e "${CHR}\t${i}\t$((i+1))\tFASTA_BED_${CHR}_${i}" ; done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; echo ${CHR} ; done < ${REGIONS_19}
+```
+cd hg19 ; 
+date ; 
+while IFS="" read -r LINE || [[ -n "${LINE}" ]]
+do
+	CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;
+	START=$( echo ${LINE} | cut -f2 -d ' '  ) ;  
+	END=$( echo ${LINE} | cut -f3 -d ' '  ) ; 
+
+	mkdir FASTA_BED.${CHR} ; 
+
+	time for (( i=${START}; i<${END}; i++ ))
+	do 
+		echo -e "${CHR}\t${i}\t$((i+1))\tFASTA_BED_${CHR}_${i}" ; 
+	done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; 
+
+	echo ${CHR} ; 
+done < ${REGIONS_19}
 cd ../ ; 
 ```
 
