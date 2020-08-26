@@ -1,10 +1,5 @@
 #! /bin/bash
 
-#FILE=NA12878.vcf
-#PREFIX=NA12878
-
-
-
 
 FILE=${1}
 PREFIX=${FILE}/${FILE}.CrossMap
@@ -22,7 +17,7 @@ if [[ ! -z "${3}" ]]
 then
 	TO=${3}
 else
-	TO=100
+	TO=10
 fi
 
 
@@ -32,20 +27,14 @@ then
 	SOURCE="hg19"
 	TARGET="GRCh38"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
-
-	REF_SOURCE=/home/shared/cathal/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
-	REF_TARGET=/home/shared/cathal/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/GRCh37_to_GRCH38.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg38ToHg19.over.chain.gz
 else
 	SOURCE="GRCh38"
 	TARGET="hg19"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
-
-	REF_SOURCE=/home/shared/cathal/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
-	REF_TARGET=/home/shared/cathal/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg38ToHg19.over.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/GRCh37_to_GRCH38.chain.gz
 fi
 
 
@@ -84,8 +73,6 @@ do
 
 	# Get the PASS file from the OUT file
 	echo "Get PASS and JUMPS"
-	#grep -v 'Unmap' ${TARGET_OUT} | cut -f6-9 | \
-	#awk -v OFS="\t" -v PASS=${TARGET_PASS} -v JUMP=${TARGET_JUMP_CHR} '{if($1 != $7){print $7,$8,$8+1,$4 > JUMP} else{print $1,$2,$3,$4 > PASS} } '
 	grep -v 'Unmap' ${TARGET_OUT} | \
 	awk -v OFS="\t" -v PASS=${TARGET_PASS} -v JUMPCHR=${TARGET_JUMP_CHR} '{ if($1 != $6) {print $1,$2,$3,$4 > JUMPCHR} else {print $6,$7,$8,$9 > PASS} }'
 
@@ -104,10 +91,6 @@ do
 	CrossMap.py bed ${CHAIN_TARGET_TO_SOURCE} ${TARGET_PASS} > ${SOURCE_OUT}
 
 	# Get the PASS and JUMP files from the OUT file
-	#grep -v 'Unmap' ${SOURCE_OUT} | cut -f6-9 | \
-	#awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	#awk -v OFS="\t" -v PASS=${SOURCE_PASS} -v JUMPCHR=${SOURCE_JUMP_CHR} -v JUMPPOS=${SOURCE_JUMP_POS}  '{ if($1 != $7) {print $7,$8,$8+1,$4 > JUMPCHR}  else if($2 != $8) {print $7,$8,$8+1,$4 > JUMPPOS} else {print $1,$2,$3,$4 > PASS} }'
-
 	grep -v 'Unmap' ${SOURCE_OUT} | \
 	cut -f6-9 | \
 	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \

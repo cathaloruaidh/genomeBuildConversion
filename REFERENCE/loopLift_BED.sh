@@ -1,10 +1,5 @@
 #! /bin/bash
 
-#FILE=NA12878.vcf
-#PREFIX=NA12878
-
-
-
 
 FILE=${1}
 PREFIX=${FILE}/${FILE}.liftOver
@@ -22,7 +17,7 @@ if [[ ! -z "${3}" ]]
 then
 	TO=${3}
 else
-	TO=100
+	TO=10
 fi
 
 
@@ -32,20 +27,14 @@ then
 	SOURCE="hg19"
 	TARGET="GRCh38"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
-
-	REF_SOURCE=/home/shared/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
-	REF_TARGET=/home/shared/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/GRCh37_to_GRCH38.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg38ToHg19.over.chain.gz
 else
 	SOURCE="GRCh38"
 	TARGET="hg19"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
-
-	REF_SOURCE=/home/shared/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
-	REF_TARGET=/home/shared/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg38ToHg19.over.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/GRCh37_to_GRCH38.chain.gz
 fi
 
 

@@ -21,11 +21,10 @@ git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 
 
 ## 2.3&nbsp; Initialisation
-Set bash variables and create output directories. 
+Set bash variables and create output directories: 
 
 ```
-MAIN_DIR=$( pwd )
-REF_DIR=${MAIN_DIR}/REFERENCE
+REF_DIR=$( pwd )/REFERENCE
 mkdir CHR COMBINE ;
 
 ```
