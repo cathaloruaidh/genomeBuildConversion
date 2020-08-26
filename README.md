@@ -21,11 +21,13 @@ git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 
 
 ## 2.3 Initialisation
-Some bash variables to be set prior to running the code. 
+Set bash variables and create output directories. 
 
 ```
 MAIN_DIR=$( pwd )
 REF_DIR=${MAIN_DIR}/REFERENCE
+mkdir CHR COMBINE ;
+
 ```
 
 Run for hg19: 
@@ -55,16 +57,11 @@ TOOL=CrossMap
 LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
 ```
 
-Create the directories
-```
-mkdir CHR COMBINE ;
-```
 
 
 
 
-
-# 3 Code Main
+# 3 Full Genome Data
 ## 3.1 Create Input BED
 
 Generate the input BED files for the conversion process. 
@@ -95,18 +92,20 @@ Run the main script to identify unstable regions.
 The loop script takes as arguments the input filename, the start iteration, the end iteration and the source build. 
 Both scripts will add the tool name to the file output, so there should be no over-writing of output files. 
 This is parallelised using GNU parallel, with 12 CPUs available. 
-Two iterations were run to determine if the algorithm was stable, or if new sites would be identified at each step (the former was expected). 
 
 
 ```
 parallel --plus -j12  "${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls )
 ```
 
+The script was set up so that iterations could be interrupted and restarted if neccessary. 
+Two iterations were run abvove to determine if the algorithm was stable, or if new sites would be identified at each step (the former was expected and observed). 
+
 
 
 ## 3.3 Sanity Check
 Check if there are entries in the files of unstable regions for the second iteration by counting the lines (regardless of the source/target builds). 
-The first two commands should return zeroes for all files, and the final line should return nothing. 
+The first two commands should return zeroes for all files, and the third command should return nothing. 
 
 ```
 for FILE in $( find . -iname '*hg19_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
@@ -117,7 +116,9 @@ cd ../ ;
 
 
 ## 3.4 Combine Sites
-Combine all the individual base-pair sites and collapse into multi-site regions. 
+For each of the five unstable regions, combine all the individual base-pair sites and collapse into multi-site regions. 
+Additionally, combine the four novel unstable regions into one file. 
+
 ```
 cd ../COMBINE ; 
 
