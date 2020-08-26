@@ -86,7 +86,7 @@ do
 
 
 
-	# list the VCF back from TARGET to SOURCE
+	# lift the VCF back from TARGET to SOURCE
 	liftOver ${TARGET_PASS} ${CHAIN_TARGET_TO_SOURCE} ${SOURCE_OUT} ${TARGET_REJECT}
 
 	# Get the PASS and JUMP file

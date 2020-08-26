@@ -87,7 +87,7 @@ do
 
 
 
-	# list the BED back from TARGET to SOURCE
+	# lift the BED back from TARGET to SOURCE
 	CrossMap.py bed ${CHAIN_TARGET_TO_SOURCE} ${TARGET_PASS} > ${SOURCE_OUT}
 
 	# Get the PASS and JUMP files from the OUT file

@@ -25,8 +25,8 @@ Set bash variables and create output directories:
 
 ```
 REF_DIR=$( pwd )/REFERENCE
+cd genomeBuildConversion ;
 mkdir CHR COMBINE ;
-
 ```
 
 Run for hg19: 
@@ -67,6 +67,7 @@ Generate the input BED files for the conversion process.
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome. 
 
 ```
+cd CHR 
 date 
 while IFS="" read -r LINE || [[ -n "${LINE}" ]]
 do
