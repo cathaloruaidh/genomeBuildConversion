@@ -48,8 +48,8 @@ Every individual base-pair position in the genome will have a BED entry, based o
 
 Run for hg19: 
 ```
-cd hg19 ; 
-date ; 
+cd hg19
+date 
 while IFS="" read -r LINE || [[ -n "${LINE}" ]]
 do
 	CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;
@@ -65,13 +65,27 @@ do
 
 	echo ${CHR} ; 
 done < ${REGIONS_19}
-cd ../ ; 
+cd ../
 ```
 
 Run for GRCh38: 
 ```
-cd GRCh38 ; 
-date ; while IFS="" read -r LINE || [[ -n "${LINE}" ]] ; do  CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;  START=$( echo ${LINE} | cut -f2 -d ' '  ) ;  END=$( echo ${LINE} | cut -f3 -d ' '  ) ; mkdir FASTA_BED.${CHR} ; time for (( i=${START}; i<${END}; i++ )) ; do echo -e "${CHR}\t${i}\t$((i+1))\tFASTA_BED_${CHR}_${i}" ; done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; echo ${CHR} ; done < ${REGIONS_38}
+cd GRCh38 
+date 
+while IFS="" read -r LINE || [[ -n "${LINE}" ]]
+do
+	CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;  
+	START=$( echo ${LINE} | cut -f2 -d ' '  ) ;  
+	END=$( echo ${LINE} | cut -f3 -d ' '  ) ; 
+
+	mkdir FASTA_BED.${CHR} ; 
+
+	time for (( i=${START}; i<${END}; i++ )) ; do 
+		echo -e "${CHR}\t${i}\t$((i+1))\tFASTA_BED_${CHR}_${i}" ; 
+	done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; 
+
+	echo ${CHR} ; 
+done < ${REGIONS_38}
 cd ../ ; 
 ```
 
@@ -86,21 +100,21 @@ Two iterations were run to determine if the algorithm was stable, or if new site
 
 Run for hg19: 
 ```
-cd hg19 ; 
+cd hg19 
 parallel --plus -j12  "${LOOP_BED} {} 1 2 hg19" ::: $( ls )
-cd ../ ; 
+cd ../ 
 ```
 
 Run for GRCh38: 
 ```
-cd GRCh38 ; 
+cd GRCh38 
 parallel --plus -j12  "${LOOP_BED} {} 1 2 GRCh38" ::: $( ls )
-cd ../ ; 
+cd ../ 
 ```
 
 
 ## Sanity Check
-Check if there are entries in the files of unstable regions for the second iteration by counting the lines. 
+Check if there are entries in the files of unstable regions for the second iteration by counting the lines (regardless of the source/target builds). 
 The first two commands should return zeroes for all files, and the final line should return nothing. 
 
 ```
@@ -135,6 +149,7 @@ cat $( find ../CHR/ -iname "*${SOURCE}_*jump_POS.bed" ) | bedtools sort -i - | b
 cat $( find ../CHR/ -iname "*${SOURCE}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.reject_1.bed
 cat $( find ../CHR/ -iname "*${TARGET}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.reject_2.bed
 cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*reject_2.bed | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.novel_exclude.bed
+
 ```
 
 
