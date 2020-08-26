@@ -8,8 +8,8 @@ Code for identifying regions of the genome that are unstable when converting bet
 - Prerequisites: `liftOver`, `CrossMap` and `bedtools`. Binary files for `picard` are supplied. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data
 - This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
-- The input BED files for the full-genome search are ~150GB in size. 
-- The code below eneds to be run separately for both builds (hg19 and GRCh38) as well as using both tools (liftOver and CrossMap). 
+- The input BED files for the full-genome search are ~150GB in size.  
+- The code below needs to be run separately for both builds (hg19 and GRCh38) as well as using both tools (liftOver and CrossMap), so one of each should be selected. 
 
 
 
@@ -70,7 +70,6 @@ mkdir CHR COMBINE ;
 Generate the input BED files for the conversion process. 
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome. 
 
-Run for hg19: 
 ```
 date 
 while IFS="" read -r LINE || [[ -n "${LINE}" ]]
@@ -87,26 +86,7 @@ do
 	done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; 
 
 	echo ${CHR} ; 
-done < ${REGIONS_19}
-```
-
-Run for GRCh38: 
-```
-date 
-while IFS="" read -r LINE || [[ -n "${LINE}" ]]
-do
-	CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;  
-	START=$( echo ${LINE} | cut -f2 -d ' '  ) ;  
-	END=$( echo ${LINE} | cut -f3 -d ' '  ) ; 
-
-	mkdir FASTA_BED.${CHR} ; 
-
-	time for (( i=${START}; i<${END}; i++ )) ; do 
-		echo -e "${CHR}\t${i}\t$((i+1))\tFASTA_BED_${CHR}_${i}" ; 
-	done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; 
-
-	echo ${CHR} ; 
-done < ${REGIONS_38}
+done < ${REGIONS}
 ```
 
 
@@ -118,15 +98,10 @@ This is parallelised using GNU parallel, with 12 CPUs available.
 Two iterations were run to determine if the algorithm was stable, or if new sites would be identified at each step (the former was expected). 
 
 
-Run for hg19: 
 ```
-parallel --plus -j12  "${LOOP_BED} {} 1 2 hg19" ::: $( ls )
+parallel --plus -j12  "${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls )
 ```
 
-Run for GRCh38: 
-```
-parallel --plus -j12  "${LOOP_BED} {} 1 2 GRCh38" ::: $( ls )
-```
 
 
 ## 3.3 Sanity Check
@@ -142,19 +117,6 @@ cd ../ ;
 
 
 ## 3.4 Combine Sites
-Run for hg19: 
-```
-SOURCE=GRCh38
-TARGET=hg19
-```
-
-Run for GRCh38:
-```
-SOURCE=hg19
-TARGET=GRCh38
-```
-
-
 Combine all the individual base-pair sites and collapse into multi-site regions. 
 ```
 cd ../COMBINE ; 
