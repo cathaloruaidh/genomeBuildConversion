@@ -1,10 +1,10 @@
-# 1 &nbsp;Genome Build Conversion
+# 1&nbsp; Genome Build Conversion
 Code for identifying regions of the genome that are unstable when converting between hg19 and GRCh38, using liftOver or CrossMap. 
 
 
 
-# 2 Set Up
-## 2.1  Notes
+# 2&nbsp; Set Up
+## 2.1&nbsp; Notes
 - Prerequisites: `liftOver`, `CrossMap` and `bedtools`. Binary files for `picard` are supplied. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data
 - This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
@@ -13,14 +13,14 @@ Code for identifying regions of the genome that are unstable when converting bet
 
 
 
-## 2.2  Installation
+## 2.2&nbsp; Installation
 Download the resource material 
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 ```
 
 
-## 2.3  Initialisation
+## 2.3&nbsp; Initialisation
 Set bash variables and create output directories. 
 
 ```
@@ -61,8 +61,8 @@ LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
 
 
 
-# 3  Full Genome Data
-## 3.1  Create Input BED
+# 3&nbsp; Full Genome Data
+## 3.1&nbsp; Create Input BED
 
 Generate the input BED files for the conversion process. 
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome. 
@@ -87,7 +87,7 @@ done < ${REGIONS}
 ```
 
 
-## 3.2  Apply Algorithm
+## 3.2&nbsp; Apply Algorithm
 Run the main script to identify unstable regions. 
 The loop script takes as arguments the input filename, the start iteration, the end iteration and the source build. 
 Both scripts will add the tool name to the file output, so there should be no over-writing of output files. 
@@ -103,7 +103,7 @@ Two iterations were run abvove to determine if the algorithm was stable, or if n
 
 
 
-## 3.3  Sanity Check
+## 3.3&nbsp; Sanity Check
 Check if there are entries in the files of unstable regions for the second iteration by counting the lines (regardless of the source/target builds). 
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 
@@ -115,7 +115,7 @@ cd ../ ;
 ```
 
 
-## 3.4  Combine Sites
+## 3.4&nbsp; Combine Sites
 For each of the five unstable regions, combine all the individual base-pair sites and collapse into multi-site regions. 
 Additionally, combine the four novel unstable regions into one file. 
 
