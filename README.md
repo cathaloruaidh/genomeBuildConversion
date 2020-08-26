@@ -1,12 +1,15 @@
-# Genome Build Conversion
+# 1 Genome Build Conversion
 Code for identifying regions of the genome that are unstable when converting between hg19 and GRCh38, using liftOver or CrossMap. 
 
-## Installation
+
+
+# 2 Set Up
+## 2.1 Installation
 Download the resource material 
 `git clone https://github.com/cathaloruaidh/genomeBuildConversion.git`
 
 
-## Set Up
+## 2.2 Initialisation
 Directory and script variables to be set prior to running the code. 
 
 ```
@@ -29,26 +32,29 @@ LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
 Create the directories
 ```
 mkdir CHR COMBINE ;
-mkdir CHR/hg19 CHR/GRCh38; 
 ```
 
 
-## Resrequisites/Notes
-- To be installed: `liftOver`, `CrossMap` and `bedtools`. 
-- Reference FASTA files are not included due to file size, but are required for the 
+## 2.3 Notes
+- Prerequisites: `liftOver`, `CrossMap` and `bedtools`. Binary files for `picard` are supplied. 
+- Reference FASTA files are not included due to file size, but are required for the application to the real WGS data
 - This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
 - The input BED files for the full-genome search are ~150GB in size. 
+- The code below eneds to be run separately for both builds (hg19 and GRCh38) as well as using both tools (liftOver and CrossMap). 
 
 
-# Code Main
-## Create Input BED
+
+
+
+
+# 3 Code Main
+## 3.1 Create Input BED
 
 Generate the input BED files for the conversion process. 
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome. 
 
 Run for hg19: 
 ```
-cd hg19
 date 
 while IFS="" read -r LINE || [[ -n "${LINE}" ]]
 do
@@ -65,12 +71,10 @@ do
 
 	echo ${CHR} ; 
 done < ${REGIONS_19}
-cd ../
 ```
 
 Run for GRCh38: 
 ```
-cd GRCh38 
 date 
 while IFS="" read -r LINE || [[ -n "${LINE}" ]]
 do
@@ -86,11 +90,10 @@ do
 
 	echo ${CHR} ; 
 done < ${REGIONS_38}
-cd ../ ; 
 ```
 
 
-## Apply Algorithm
+## 3.2 Apply Algorithm
 Run the main script to identify unstable regions. 
 The loop script takes as arguments the input filename, the start iteration, the end iteration and the source build. 
 Both scripts will add the tool name to the file output, so there should be no over-writing of output files. 
@@ -100,20 +103,16 @@ Two iterations were run to determine if the algorithm was stable, or if new site
 
 Run for hg19: 
 ```
-cd hg19 
 parallel --plus -j12  "${LOOP_BED} {} 1 2 hg19" ::: $( ls )
-cd ../ 
 ```
 
 Run for GRCh38: 
 ```
-cd GRCh38 
 parallel --plus -j12  "${LOOP_BED} {} 1 2 GRCh38" ::: $( ls )
-cd ../ 
 ```
 
 
-## Sanity Check
+## 3.3 Sanity Check
 Check if there are entries in the files of unstable regions for the second iteration by counting the lines (regardless of the source/target builds). 
 The first two commands should return zeroes for all files, and the final line should return nothing. 
 
@@ -125,7 +124,7 @@ cd ../ ;
 ```
 
 
-## Combine
+## 3.4 Combine Sites
 Run for hg19: 
 ```
 SOURCE=GRCh38
