@@ -26,16 +26,31 @@ Some bash variables to be set prior to running the code.
 ```
 MAIN_DIR=$( pwd )
 REF_DIR=${MAIN_DIR}/REFERENCE
-
-REGIONS_38=${REF_DIR}/GRCh38_full_analysis_set_plus_decoy_hla.regions.Standard.bed 
-REGIONS_19=${REF_DIR}/ucsc.hg19.region.Standard.sort.bed
 ```
 
-Note: Need to select this depending on whether liftOver or CrossMap is used. 
+Run for hg19: 
+```
+SOURCE=hg19
+TARGET=GRCh38
+REGIONS=${REF_DIR}/ucsc.hg19.region.Standard.sort.bed
+```
+
+Run for GRCh38: 
+```
+SOURCE=GRCh38
+TARGET=hg19
+REGIONS=${REF_DIR}/GRCh38_full_analysis_set_plus_decoy_hla.regions.Standard.bed 
+```
+
+
+Run for liftOver
 ```
 TOOL=liftOver
 LOOP_BED=${REF_DIR}/loopLift_BED.sh
+```
 
+Run for CrossMap
+```
 TOOL=CrossMap
 LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
 ```
