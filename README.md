@@ -14,18 +14,11 @@ Code for identifying regions of the genome that are unstable when converting bet
 
 
 ## 2.2&nbsp; Installation
-Download the resource material 
+Download the resource material and initialise:
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
-```
-
-
-## 2.3&nbsp; Initialisation
-Set bash variables and create output directories: 
-
-```
-REF_DIR=$( pwd )/REFERENCE
 cd genomeBuildConversion ;
+REF_DIR=$( pwd )/REFERENCE
 mkdir CHR COMBINE ;
 ```
 
