@@ -4,15 +4,24 @@ Code for identifying regions of the genome that are unstable when converting bet
 
 
 # 2 Set Up
-## 2.1 Installation
+## 2.1 Notes
+- Prerequisites: `liftOver`, `CrossMap` and `bedtools`. Binary files for `picard` are supplied. 
+- Reference FASTA files are not included due to file size, but are required for the application to the real WGS data
+- This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
+- The input BED files for the full-genome search are ~150GB in size. 
+- The code below eneds to be run separately for both builds (hg19 and GRCh38) as well as using both tools (liftOver and CrossMap). 
+
+
+
+## 2.2 Installation
 Download the resource material 
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 ```
 
 
-## 2.2 Initialisation
-Directory and script variables to be set prior to running the code. 
+## 2.3 Initialisation
+Some bash variables to be set prior to running the code. 
 
 ```
 MAIN_DIR=$( pwd )
@@ -35,15 +44,6 @@ Create the directories
 ```
 mkdir CHR COMBINE ;
 ```
-
-
-## 2.3 Notes
-- Prerequisites: `liftOver`, `CrossMap` and `bedtools`. Binary files for `picard` are supplied. 
-- Reference FASTA files are not included due to file size, but are required for the application to the real WGS data
-- This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
-- The input BED files for the full-genome search are ~150GB in size. 
-- The code below eneds to be run separately for both builds (hg19 and GRCh38) as well as using both tools (liftOver and CrossMap). 
-
 
 
 
