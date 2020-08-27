@@ -58,7 +58,8 @@ LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
 ## 3.1&nbsp; Create Input BED
 
 Generate the input BED files for the conversion process. 
-Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome. 
+Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome.
+This is parallelised for speed, as it can take up to 90 minutes per chromosome, depending on the size. 
 
 ```
 cd CHR 
