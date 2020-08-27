@@ -20,6 +20,7 @@ git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 cd genomeBuildConversion ;
 REF_DIR=$( pwd )/REFERENCE
 mkdir CHR COMBINE ;
+chmod +x ${REF_DIR}/*sh
 ```
 
 Run for hg19: 
