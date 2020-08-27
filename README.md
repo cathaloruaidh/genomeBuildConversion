@@ -5,7 +5,7 @@ Code for identifying regions of the genome that are unstable when converting bet
 
 # 2&nbsp; Set Up
 ## 2.1&nbsp; Notes
-- Prerequisites: `liftOver`, `CrossMap` and `bedtools`. Binary files for `picard` are supplied. 
+- Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Binary files for `picard` are supplied. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data and should be stored in the REFERENCE directory. 
 - This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
@@ -61,22 +61,8 @@ Every individual base-pair position in the genome will have a BED entry, based o
 
 ```
 cd CHR 
-date 
-while IFS="" read -r LINE || [[ -n "${LINE}" ]]
-do
-	CHR=$( echo ${LINE} | cut -f1 -d ' '  ) ;
-	START=$( echo ${LINE} | cut -f2 -d ' '  ) ;  
-	END=$( echo ${LINE} | cut -f3 -d ' '  ) ; 
-
-	mkdir FASTA_BED.${CHR} ; 
-
-	time for (( i=${START}; i<${END}; i++ ))
-	do 
-		echo -e "${CHR}\t${i}\t$((i+1))\tFASTA_BED_${CHR}_${i}" ; 
-	done > FASTA_BED.${CHR}/FASTA_BED.${CHR}.bed ; 
-
-	echo ${CHR} ; 
-done < ${REGIONS}
+date ;
+parallel --plus -j 12 --colsep '\t' "${REF_DIR}/createInputBed.sh {1} {2} {3}" :::: ${REGIONS}
 ```
 
 
