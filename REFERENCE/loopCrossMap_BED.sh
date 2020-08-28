@@ -2,8 +2,8 @@
 
 
 FILE=${1}
-PREFIX=${FILE}/${FILE}.CrossMap
-
+INPUT=${FILE}/${FILE}
+PREFIX=${INPUT}.CrossMap
 
 if [[ ! -z "${2}" ]]
 then
@@ -39,7 +39,7 @@ fi
 
 
 
-cp ${PREFIX}.bed ${PREFIX}_${SOURCE}_0.pass.bed
+cp ${INPUT}.bed ${PREFIX}_${SOURCE}_0.pass.bed
 
 
 for i in $(seq ${FROM} ${TO} )

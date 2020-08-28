@@ -2,7 +2,8 @@
 
 
 FILE=${1}
-PREFIX=${FILE}/${FILE}.liftOver
+INPUT=${FILE}/${FILE}
+PREFIX=${INPUT}.liftOver
 
 
 if [[ ! -z "${2}" ]]
@@ -39,7 +40,7 @@ fi
 
 
 
-cp ${PREFIX}.bed ${PREFIX}_${SOURCE}_0.pass.bed
+cp ${INPUT}.bed ${PREFIX}_${SOURCE}_0.pass.bed
 
 
 for i in $(seq ${FROM} ${TO} )
