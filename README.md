@@ -19,6 +19,7 @@ Download the resource material and initialise:
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 cd genomeBuildConversion ;
 REF_DIR=$( pwd )/REFERENCE
+export REF_DIR
 mkdir CHR COMBINE ;
 chmod +x ${REF_DIR}/*sh
 ```
@@ -76,7 +77,7 @@ This is parallelised using GNU parallel, with 12 CPUs available.
 
 
 ```
-parallel --plus -j12  "${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls )
+parallel --plus -j12  ". ${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls )
 ```
 
 The script was set up so that iterations could be interrupted and restarted if neccessary. 
