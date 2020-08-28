@@ -41,13 +41,14 @@ fi
 
 cp ${INPUT}.bed ${PREFIX}_${SOURCE}_0.pass.bed
 
+echo "Beginning for ${FILE}"
 
 for i in $(seq ${FROM} ${TO} )
 do
-	echo -e "\n\n"
+	echo -e "\n"
 	date
 	echo "Beginning iteration $i"
-	echo -e "\n\n"
+	echo -e "\n"
 
 
 	p=$(( ${i} - 1 ))	
@@ -106,3 +107,6 @@ do
 	
 
 done
+
+
+echo -e "\n\n\n"
