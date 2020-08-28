@@ -18,8 +18,11 @@ Download the resource material and initialise:
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 cd genomeBuildConversion ;
+
 REF_DIR=$( pwd )/REFERENCE
+SCRIPT_DIR=$( pwd )/SCRIPTS
 export REF_DIR
+export SCRIPT_DIR
 mkdir CHR COMBINE ;
 chmod +x ${REF_DIR}/*sh
 ```
@@ -42,13 +45,13 @@ REGIONS=${REF_DIR}/GRCh38_full_analysis_set_plus_decoy_hla.regions.Standard.bed
 Run for liftOver
 ```
 TOOL=liftOver
-LOOP_BED=${REF_DIR}/loopLift_BED.sh
+LOOP_BED=${SCRIPT_DIR}/loopLift_BED.sh
 ```
 
 Run for CrossMap
 ```
 TOOL=CrossMap
-LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
+LOOP_BED=${SCRIPT_DIR}/loopCrossMap_BED.sh
 ```
 
 
@@ -60,12 +63,12 @@ LOOP_BED=${REF_DIR}/loopCrossMap_BED.sh
 
 Generate the input BED files for the conversion process. 
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome.
-This is parallelised for speed, as it can take up to 90 minutes per chromosome, depending on the size. 
+This is parallelised for speed, as it can take up to 90 minutes on the largest chromosome. 
 
 ```
 cd CHR 
 date ;
-parallel --plus -j 12 --colsep '\t' "${REF_DIR}/createInputBed.sh {1} {2} {3}" :::: ${REGIONS}
+parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3}" :::: ${REGIONS}
 ```
 
 
