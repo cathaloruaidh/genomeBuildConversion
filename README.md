@@ -1,7 +1,7 @@
 # 1&nbsp; Genome Build Conversion
 Code for identifying regions of the genome that are unstable when converting between hg19 and GRCh38, using liftOver or CrossMap. 
 
-
+Navigation: 
 - [Set Up](#2-set-up) 
 - [Full Genome Data](#3-full-genome-data)
 - [Real WGS Example](#4-real-wgs-example)
@@ -124,5 +124,5 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 
 
-# 4 $nbsp;Real WGS Example
+# 4 &nbsp;Real WGS Example
 To do. 
