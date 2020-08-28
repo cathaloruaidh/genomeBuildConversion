@@ -2,6 +2,11 @@
 Code for identifying regions of the genome that are unstable when converting between hg19 and GRCh38, using liftOver or CrossMap. 
 
 
+- [Set Up](#set-up) 
+- [Full Genome Data](#full-genome-data)
+- [Real WGS Example](#real-wgs-example)
+- 
+- 
 
 # 2&nbsp; Set Up
 ## 2.1&nbsp; Notes
