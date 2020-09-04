@@ -29,7 +29,7 @@ SCRIPT_DIR=$( pwd )/SCRIPTS
 export REF_DIR
 export SCRIPT_DIR
 mkdir CHR COMBINE ;
-chmod +x ${REF_DIR}/*sh
+chmod +x ${SCRIPT_DIR}/*sh
 ```
 
 Run for hg19: 
