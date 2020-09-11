@@ -36,6 +36,7 @@ Run for hg19:
 ```
 SOURCE=hg19
 TARGET=GRCh38
+export SOURCE TARGET
 REGIONS=${REF_DIR}/ucsc.hg19.region.Standard.sort.bed
 ```
 
@@ -43,6 +44,7 @@ Run for GRCh38:
 ```
 SOURCE=GRCh38
 TARGET=hg19
+export SOURCE TARGET
 REGIONS=${REF_DIR}/GRCh38_full_analysis_set_plus_decoy_hla.regions.Standard.bed 
 ```
 
@@ -50,12 +52,14 @@ REGIONS=${REF_DIR}/GRCh38_full_analysis_set_plus_decoy_hla.regions.Standard.bed
 Run for liftOver
 ```
 TOOL=liftOver
+export TOOL
 LOOP_BED=${SCRIPT_DIR}/loopLift_BED.sh
 ```
 
 Run for CrossMap
 ```
 TOOL=CrossMap
+export TOOL
 LOOP_BED=${SCRIPT_DIR}/loopCrossMap_BED.sh
 ```
 
@@ -73,7 +77,7 @@ This is parallelised for speed, as it can take up to 90 minutes on the largest c
 ```
 cd CHR 
 date ;
-parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3}" :::: ${REGIONS}
+parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3} ${SOURCE}" :::: ${REGIONS}
 ```
 
 
