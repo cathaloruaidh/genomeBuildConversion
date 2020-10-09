@@ -1,5 +1,9 @@
 # 1&nbsp; Genome Build Conversion
-Code for identifying regions of the genome that are unstable when converting between GRCh37 and GRCh38, using liftOver or CrossMap. 
+Code for identifying positions in the human genome that are unstable when converting between GRCh37 and GRCh38, using either liftOver or CrossMap. 
+Pre-excluding SNVs in this regions before converting between builds results in 
+If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com
+
+If you use the exclude files or this algorithm in your publication, please cite the following paper:
 
 Navigation: 
 - [Set Up](#2-set-up) 
@@ -10,9 +14,9 @@ Navigation:
 
 # 2&nbsp; Set Up
 ## 2.1&nbsp; Notes
-- Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Binary files for `picard` are supplied. 
+- Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data and should be stored in the REFERENCE directory. 
-- This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
+- This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
 - The code below needs to be run separately for both builds (GRCh37 and GRCh38) as well as using both tools (liftOver and CrossMap), so one of each should be selected. 
 
@@ -71,7 +75,7 @@ LOOP_BED=${SCRIPT_DIR}/loopCrossMap_BED.sh
 ## 3.1&nbsp; Create Input BED
 
 Generate the input BED files for the conversion process. 
-Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes, including the mitochondrial chromosome.
+Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes.
 This is parallelised for speed, as it can take up to 90 minutes on the largest chromosome. 
 
 ```
@@ -110,7 +114,7 @@ cd ../ ;
 
 
 ## 3.4&nbsp; Combine Sites
-For each of the five unstable regions, combine all the individual base-pair sites and collapse into multi-site regions. 
+For each of the five unstable regions, combine all the individual base-pair positions and collapse into multi-site regions. 
 Additionally, combine the four novel unstable regions into one file. 
 
 ```
