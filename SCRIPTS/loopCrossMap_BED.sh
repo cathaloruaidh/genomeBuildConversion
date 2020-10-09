@@ -22,19 +22,19 @@ fi
 
 
 
-if [[ "${4}" = "hg19" ]]
+if [[ "${4}" = "GRCh37" ]]
 then
-	SOURCE="hg19"
+	SOURCE="GRCh37"
 	TARGET="GRCh38"
 
-	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/GRCh37_to_GRCH38.chain.gz
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg19ToHg38.over.chain.gz
 	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg38ToHg19.over.chain.gz
 else
 	SOURCE="GRCh38"
-	TARGET="hg19"
+	TARGET="GRCh37"
 
 	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg38ToHg19.over.chain.gz
-	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/GRCh37_to_GRCH38.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg19ToHg38.over.chain.gz
 fi
 
 

@@ -1,5 +1,5 @@
 # 1&nbsp; Genome Build Conversion
-Code for identifying regions of the genome that are unstable when converting between hg19 and GRCh38, using liftOver or CrossMap. 
+Code for identifying regions of the genome that are unstable when converting between GRCh37 and GRCh38, using liftOver or CrossMap. 
 
 Navigation: 
 - [Set Up](#2-set-up) 
@@ -14,7 +14,7 @@ Navigation:
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data and should be stored in the REFERENCE directory. 
 - This process assumes `chr1, chr2, ..., chrX, chrY, chrM` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
-- The code below needs to be run separately for both builds (hg19 and GRCh38) as well as using both tools (liftOver and CrossMap), so one of each should be selected. 
+- The code below needs to be run separately for both builds (GRCh37 and GRCh38) as well as using both tools (liftOver and CrossMap), so one of each should be selected. 
 
 
 
@@ -32,20 +32,20 @@ mkdir CHR COMBINE ;
 chmod +x ${SCRIPT_DIR}/*sh
 ```
 
-Run for hg19: 
+Run for GRCh37: 
 ```
-SOURCE=hg19
+SOURCE=GRCh37
 TARGET=GRCh38
 export SOURCE TARGET
-REGIONS=${REF_DIR}/ucsc.hg19.region.Standard.sort.bed
+REGIONS=${REF_DIR}/GRCh37.region.Standard.bed
 ```
 
 Run for GRCh38: 
 ```
 SOURCE=GRCh38
-TARGET=hg19
+TARGET=GRCh37
 export SOURCE TARGET
-REGIONS=${REF_DIR}/GRCh38_full_analysis_set_plus_decoy_hla.regions.Standard.bed 
+REGIONS=${REF_DIR}/GRCh38.regions.Standard.bed 
 ```
 
 
@@ -102,7 +102,7 @@ Check if there are entries in the files of unstable regions for the second itera
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 
 ```
-for FILE in $( find . -iname '*hg19_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
+for FILE in $( find . -iname '*GRCh37_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
 for FILE in $( find . -iname '*GRCh38_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
 for FILE in $( find . -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
 cd ../ ; 
