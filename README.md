@@ -18,7 +18,7 @@ Navigation:
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data and should be stored in the REFERENCE directory. 
 - This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
-- The code below needs to be run separately for both builds (GRCh37 and GRCh38) as well as using both tools (liftOver and CrossMap), so one of each should be selected. 
+- For a single run of the algorithm, a source and target such as GRCh37 and GRCh38 must be chosen as well as a tool (liftOver or CrossMap). 
 
 
 
@@ -97,7 +97,7 @@ parallel --plus -j12  ". ${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls | sort -V)
 ```
 
 The script was set up so that iterations could be interrupted and restarted if neccessary. 
-Two iterations were run abvove to determine if the algorithm was stable, or if new sites would be identified at each step (the former was expected and observed). 
+Two iterations were run above to determine if the algorithm was stable, or if new sites would be identified at each step (the former was expected and observed). 
 
 
 
