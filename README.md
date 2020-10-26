@@ -1,7 +1,7 @@
 # 1&nbsp; Genome Build Conversion
 Code for identifying positions in the human genome that are unstable when converting between GRCh37 and GRCh38, using either liftOver or CrossMap. 
 Previous work has highlighted unusual behaviour in build conversion, such as SNVs mapping to a different chromosome. 
-BED files describing these conversion-unstable positions (CUPs) are provided, as well as a combined file of all regions ("novel_exclude"). 
+BED files describing these conversion-unstable positions (CUPs) are provided, as well as a combined file of all regions ("novel_CUPs"). 
 Pre-excluding SNVs in these regions before converting between builds removes all unstable behaviour. 
 
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). If you use the exclude files or this algorithm in your publication, please cite the following paper:
