@@ -18,7 +18,8 @@ Navigation:
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data and should be stored in the REFERENCE directory. 
 - This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
-- For a single run of the algorithm, a source and target such as GRCh37 and GRCh38 must be chosen as well as a tool (liftOver or CrossMap). 
+- For a single run of the algorithm, a source and target such as GRCh37 and GRCh38 must be chosen as well as a tool (`liftOver` or `CrossMap`). 
+- Included in the download is JAR files for `picard` and `GATK`. 
 
 
 
@@ -94,7 +95,7 @@ This is parallelised using GNU parallel, with 12 CPUs available.
 
 
 ```
-parallel --plus -j12  ". ${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls | sort -V)
+parallel --plus -j12  ". ${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls -d *_${SOURCE} | sort -V )
 ```
 
 The script was set up so that iterations could be interrupted and restarted if neccessary. 
@@ -132,8 +133,8 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 
 
-# 4 &nbsp;Real WGS Example
-## 4.1 Download
+# 4&nbsp; Real WGS Example
+## 4.1&nbsp; Download
 Get the VCF files for NA12877 and NA12878 from the Illumina Platinum Genomes project. 
 
 ```
@@ -190,15 +191,25 @@ done
 
 ```
 
-## Apply Algorithm to VCF Data
-First, select the original or the stable data (i.e. SNVs at CUPs pre-excluded)
+Finally, download reference genomes for GRCh37 and GRCh38:
+```
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.gz -O ${REF_DIR}/GRCh37.fa.gz
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa -O ${REF_DIR}/GRCh38.fa
+```
+
+
+## 4.2&nbsp; VCF Data
+First, select the original or the stable data (i.e. SNVs at CUPs pre-excluded):
 ```
 CATEGORY=original
 # or
 CATEGORY=stable
 ```
 
-Apply the algorithm
+Apply the algorithm: 
+```
+date ; time ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${BUILD}/${SAMPLE}.${SOURCE}.${NAME}.vcf 1 2 ${SOURCE}
+```
 
 
 

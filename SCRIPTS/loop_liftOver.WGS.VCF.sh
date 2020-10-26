@@ -27,30 +27,37 @@ fi
 
 
 
-if [[ "${4}" = "hg19" ]]
+if [[ "${4}" = "GRCh37" ]]
 then
-	SOURCE="hg19"
+	SOURCE="GRCh37"
 	TARGET="GRCh38"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg19ToHg38.over.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg38ToHg19.over.chain.gz
 
 	REF_SOURCE=/home/shared/cathal/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
 	REF_TARGET=/home/shared/cathal/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
 else
 	SOURCE="GRCh38"
-	TARGET="hg19"
+	TARGET="GRCh37"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg38ToHg19.over.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg19ToHg38.over.chain.gz
 
 	REF_SOURCE=/home/shared/cathal/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
 	REF_TARGET=/home/shared/cathal/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
 fi
 
 
+if [[ ! -z "${5}" ]]
+then
+    OUT_DIR=${PWD}
+else
+    OUT_DIR=${5}
+fi
 
-cp ${PREFIX}.vcf ${PREFIX}_${SOURCE}_0.pass.vcf
+
+cp ${PREFIX}.vcf ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.vcf
 
 
 for i in $(seq ${FROM} ${TO} )
@@ -63,31 +70,31 @@ do
 
 	p=$(( ${i} - 1 ))	
 
-	SOURCE_PASS_PREV=${PREFIX}_${SOURCE}_${p}.pass.vcf
-	SOURCE_OUT=${PREFIX}_${SOURCE}_${i}.out.vcf
-	SOURCE_PASS=${PREFIX}_${SOURCE}_${i}.pass.vcf
-	SOURCE_PASS_BED=${PREFIX}_${SOURCE}_${i}.pass.bed
-	SOURCE_REJECT=${PREFIX}_${SOURCE}_${i}.reject.vcf
-	SOURCE_EXTRACT=${PREFIX}_${SOURCE}_${i}.reject.extract.bed
-	SOURCE_JUMP_CHR=${PREFIX}_${SOURCE}_${i}.CHR_jump.bed
-	SOURCE_JUMP_POS=${PREFIX}_${SOURCE}_${i}.POS_jump.bed
-	SOURCE_MISMATCH=${PREFIX}_${SOURCE}_${i}.mismatch.bed
-	SOURCE_REMOVE=${PREFIX}_${SOURCE}_${i}.remove.txt
+	SOURCE_PASS_PREV=${OUT_DIR}/${PREFIX}_${SOURCE}_${p}.pass.vcf
+	SOURCE_OUT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.out.vcf
+	SOURCE_PASS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.pass.vcf
+	SOURCE_PASS_BED=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.pass.bed
+	SOURCE_REJECT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.vcf
+	SOURCE_EXTRACT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.extract.bed
+	SOURCE_JUMP_CHR=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.CHR_jump.bed
+	SOURCE_JUMP_POS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.POS_jump.bed
+	SOURCE_MISMATCH=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.mismatch.bed
+	SOURCE_REMOVE=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.remove.txt
 
-	TARGET_OUT=${PREFIX}_${TARGET}_${i}.out.vcf
-	TARGET_PASS=${PREFIX}_${TARGET}_${i}.pass.vcf
-	TARGET_PASS_BED=${PREFIX}_${TARGET}_${i}.pass.bed
-	TARGET_REJECT=${PREFIX}_${TARGET}_${i}.reject.vcf
-	TARGET_EXTRACT=${PREFIX}_${TARGET}_${i}.reject.extract.bed
-	TARGET_JUMP_CHR=${PREFIX}_${TARGET}_${i}.CHR_jump.bed
-	TARGET_MISMATCH=${PREFIX}_${TARGET}_${i}.mismatch.bed
-	TARGET_REMOVE=${PREFIX}_${TARGET}_${i}.remove.txt
+	TARGET_OUT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.out.vcf
+	TARGET_PASS=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.vcf
+	TARGET_PASS_BED=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.bed
+	TARGET_REJECT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.vcf
+	TARGET_EXTRACT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.extract.bed
+	TARGET_JUMP_CHR=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.CHR_jump.bed
+	TARGET_MISMATCH=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.mismatch.bed
+	TARGET_REMOVE=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.remove.txt
 
 
 
 	# lift the VCF from SOURCE to TARGET
 
-	java -Djava.io.tmpdir=/home/shared/cathal/tmp -jar /home/shared/cathal/tools/picard.jar LiftoverVcf \
+	java -Djava.io.tmpdir=${OUT_DIR} -jar ${SCRIPT_DIR}/picard.jar LiftoverVcf \
 		I=${SOURCE_PASS_PREV} \
 		O=${TARGET_OUT} \
 		C=${CHAIN_SOURCE_TO_TARGET} \
@@ -120,7 +127,7 @@ do
 	
 	if [[ -f ${TARGET_REMOVE} && $( wc -l ${TARGET_REMOVE} | cut -f1 ) > 0 ]]
 	then
-		java -Djava.io.tmpdir=/home/shared/cathal/tmp -jar /home/shared/cathal/tools/gatk/GenomeAnalysisTK_3.8.jar \
+		java -Djava.io.tmpdir=${OUT_DIR} -jar ${SCRIPT_DIR}/GenomeAnalysisTK_3.8.jar \
 			-T SelectVariants \
 			-V ${TARGET_OUT} \
 			-R ${REF_TARGET} \
@@ -135,7 +142,7 @@ do
 
 
 	# list the VCF back from TARGET to SOURCE
-	java -Djava.io.tmpdir=/home/shared/cathal/tmp -jar /home/shared/cathal/tools/picard.jar LiftoverVcf \
+	java -Djava.io.tmpdir=${OUT_DIR} -jar ${SCRIPT_DIR}/picard.jar LiftoverVcf \
 		I=${TARGET_PASS} \
 		O=${SOURCE_OUT} \
 		C=${CHAIN_TARGET_TO_SOURCE} \
@@ -155,7 +162,7 @@ do
 	echo -e "Get Pass \n\n"
 	if [[ -f ${SOURCE_REMOVE} && $( wc -l ${SOURCE_REMOVE} | cut -f1 ) > 0 ]]
 	then
-		java -Djava.io.tmpdir=/home/shared/cathal/tmp -jar /home/shared/cathal/tools/gatk/GenomeAnalysisTK_3.8.jar \
+		java -Djava.io.tmpdir=${OUT_DIR} -jar ${SCRIPT_DIR}/GenomeAnalysisTK_3.8.jar \
 			-T SelectVariants \
 			-V ${SOURCE_OUT} \
 			-R ${REF_SOURCE} \
