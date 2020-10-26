@@ -206,15 +206,42 @@ CATEGORY=original
 CATEGORY=stable
 ```
 
+Additionally, select the 
+```
+SAMPLE=NA12877
+# or
+SAMPLE=NA12878
+```
+
 Apply the algorithm: 
 ```
-date
-time ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${BUILD}/${SAMPLE}.${SOURCE}.${NAME}.vcf 1 2 ${SOURCE}
+${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${BUILD}/${SAMPLE}.${SOURCE}.${NAME}.vcf 1 2 ${SOURCE}
 ```
 
+Check that there are no entries in the files of unstable regions for the second iteration. 
+All commands should return zeroes for the files. 
+```
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*_2.*jump*" ) ; do wc -l ${FILE} ; done
+```
 
+Combine the results. 
+```
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*CHR_jump.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*CHR_jump.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_1.bed ; fi
 
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*CHR_jump.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*CHR_jump.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_2.bed ; fi
 
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*POS_jump.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*POS_jump.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.POS_jump.bed ; fi
+
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find VCF/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_1.bed ; fi
+
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_2.bed ; fi
+
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_1.bed ; fi
+
+N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_2.bed ; fi 
+```
 
 
 
