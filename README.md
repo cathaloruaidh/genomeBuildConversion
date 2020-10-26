@@ -208,7 +208,8 @@ CATEGORY=stable
 
 Apply the algorithm: 
 ```
-date ; time ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${BUILD}/${SAMPLE}.${SOURCE}.${NAME}.vcf 1 2 ${SOURCE}
+date
+time ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${BUILD}/${SAMPLE}.${SOURCE}.${NAME}.vcf 1 2 ${SOURCE}
 ```
 
 
