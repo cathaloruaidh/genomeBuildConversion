@@ -28,11 +28,12 @@ Download the resource material and initialise:
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
 cd genomeBuildConversion ;
 
-REF_DIR=$( pwd )/REFERENCE
-SCRIPT_DIR=$( pwd )/SCRIPTS
+MAIN_DIR=${PWD}
+REF_DIR=${MAIN_DIR}/REFERENCE
+SCRIPT_DIR=${MAIN_DIR}/SCRIPTS
 export REF_DIR
 export SCRIPT_DIR
-mkdir CHR COMBINE ;
+mkdir CHR COMBINE WGS_DATA ;
 chmod +x ${SCRIPT_DIR}/*sh
 ```
 
@@ -57,14 +58,14 @@ Run for liftOver
 ```
 TOOL=liftOver
 export TOOL
-LOOP_BED=${SCRIPT_DIR}/loopLift_BED.sh
+LOOP_BED=${SCRIPT_DIR}/loop_${TOOL}.FullGenome.BED.sh
 ```
 
 Run for CrossMap
 ```
 TOOL=CrossMap
 export TOOL
-LOOP_BED=${SCRIPT_DIR}/loopCrossMap_BED.sh
+LOOP_BED=${SCRIPT_DIR}/loop_${TOOL}.FullGenome.BED.sh
 ```
 
 
@@ -131,13 +132,12 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 
 
-
 # 4 &nbsp;Real WGS Example
+## 4.1 Download
 Get the VCF files for NA12877 and NA12878 from the Illumina Platinum Genomes project. 
 
 ```
-mkdir WGS_Data
-cd WGS_Data
+cd ${MAIN_DIR}/WGS_DATA
 mkdir GRCh37 GRCh38
 
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg19/small_variants/ConfidentRegions.bed.gz -O GRCh37/ConfidentRegions.GRCh37.bed.gz
@@ -149,27 +149,56 @@ wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg19/small_
 
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/ConfidentRegions.bed.gz -O GRCh38/ConfidentRegions.GRCh38.bed.gz
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/ConfidentRegions.bed.gz.tbi -O GRCh38/ConfidentRegions.GRCh38.bed.gz.tbi
-wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12877/NA12877.vcf.gz -O GRCh38/NA12877.GRCh37.vcf.gz
-wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12877/NA12877.vcf.gz.tbi  -O GRCh38/NA12877.GRCh37.vcf.gz.tbi
+wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12877/NA12877.vcf.gz -O GRCh38/NA12877.GRCh38.vcf.gz
+wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12877/NA12877.vcf.gz.tbi  -O GRCh38/NA12877.GRCh38.vcf.gz.tbi
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12878/NA12878.vcf.gz -O GRCh38/NA12878.GRCh38.vcf.gz
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12878/NA12878.vcf.gz.tbi -O GRCh38/NA12878.GRCh38.vcf.gz.tbi
 ```
 
-Annotate the variants with unique identifier. 
-
+Annotate the variants with unique identifier and extract bi-allelic SNVs subset to confident regions. 
 ```
 for SAMPLE in NA12877 NA12878
 do 
     for BUILD in GRCh37 GRCh38
     do
-        bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz | awk -v OFS="\t" -v SOURCE=${BUILD} '{print $1,$2-1,$2,$1 "_" $2 "_" $3 "_" $4 "_" SOURCE }' | gzip -c - > ${BUILD}/${SAMPLE}.${SAMPLE}.annotate.bed.gz
+        echo "${SAMPLE} on ${BUILD}"
+        bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz | awk -v OFS="\t" -v SOURCE=${BUILD} '{print $1,$2-1,$2,$1 "_" $2 "_" $3 "_" $4 "_" SOURCE }' | gzip -c - > ${BUILD}/${SAMPLE}.${BUILD}.annotate.bed.gz
+        bcftools annotate -c CHROM,FROM,TO,ID -a ${BUILD}/${SAMPLE}.${BUILD}.annotate.bed.gz -Oz -o ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz
+        tabix ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz
+        bcftools view -Oz --max-alleles 2 --types snps -R ${BUILD}/ConfidentRegions.${BUILD}.bed.gz ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz > ${BUILD}/${SAMPLE}.annotate_bi_SNV.original.vcf.gz 
+        
+        echo -e "\tExtracting SNVs at stable positions"
+        vcftools --gzvcf ${BUILD}/${SAMPLE}.annotate.bi_SNV.original.vcf.gz --exclude-bed ${MAIN_DIR}/CUP_FILES/FASTA_BED.ALL_${BUILD}.novel_CUPs.bed --recode --recode-INFO-all --out ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV 
+        mv ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.recode.vcf ${BUILD}/${SAMPLE}.annotate.bi_SNV.stable.vcf
+        bgzip -f ${BUILD}/${SAMPLE}.annotate.bi_SNV.stable.vcf
+        tabix -f ${BUILD}/${SAMPLE}.annotate.bi_SNV.stable.vcf.gz
     done
 done
 ```
 
+Create the directories
+```
+for BUILD in GRCh37 GRCh38
+    do for CAT in Original Stable
+        do for SAMPLE in NA12877 NA12878
+            do for TYPE in VCF BED
+                do mkdir -p ${BUILD}/${CAT}/${SAMPLE}/${TYPE}
+            done
+        done
+    done
+done
 
+```
 
+## Apply Algorithm to VCF Data
+First, select the original or the stable data (i.e. SNVs at CUPs pre-excluded)
+```
+CATEGORY=original
+# or
+CATEGORY=stable
+```
 
+Apply the algorithm
 
 
 
