@@ -1,13 +1,9 @@
 #! /bin/bash
 
-#FILE=NA12878.vcf
-#PREFIX=NA12878
-
-
 
 
 FILE=${1}
-PREFIX=${FILE%.bed}
+PREFIX=$( basename ${FILE%.bed} )
 
 
 if [[ ! -z "${2}" ]]
@@ -27,30 +23,37 @@ fi
 
 
 
-if [[ "${4}" = "hg19" ]]
+if [[ "${4}" = "GRCh37" ]]
 then
-	SOURCE="hg19"
+	SOURCE="GRCh37"
 	TARGET="GRCh38"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg19ToHg38.over.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg38ToHg19.over.chain.gz
 
-	REF_SOURCE=/home/shared/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
-	REF_TARGET=/home/shared/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
+	REF_SOURCE=${REF_DIR}/GRCh37.fa.gz
+	REF_TARGET=${REF_DIR}/GRCh38.fa.gz
 else
 	SOURCE="GRCh38"
-	TARGET="hg19"
+	TARGET="GRCh37"
 
-	CHAIN_SOURCE_TO_TARGET=/home/shared/cathal/reference/chainFiles/hg38ToHg19.over.chain.gz
-	CHAIN_TARGET_TO_SOURCE=/home/shared/cathal/reference/chainFiles/GRCh37_to_GRCH38.chain.gz
+	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg38ToHg19.over.chain.gz
+	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg19ToHg38.over.chain.gz
 
-	REF_SOURCE=/home/shared/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
-	REF_TARGET=/home/shared/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
+	REF_SOURCE=${REF_DIR}/GRCh38.fa.gz
+	REF_TARGET=${REF_DIR}/GRCh37.fa.gz
 fi
 
 
+if [[ ! -z "${5}" ]]
+then
+    OUT_DIR=${PWD}
+else
+    OUT_DIR=${5}
+fi
 
-cp ${PREFIX}.bed ${PREFIX}_${SOURCE}_0.pass.bed
+
+cp ${PREFIX}.bed ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.bed
 
 
 for i in $(seq ${FROM} ${TO} )
@@ -63,19 +66,19 @@ do
 
 	p=$(( ${i} - 1 ))	
 
-	SOURCE_PASS_PREV=${PREFIX}_${SOURCE}_${p}.pass.bed
-	SOURCE_OUT=${PREFIX}_${SOURCE}_${i}.out.bed
-	SOURCE_PASS=${PREFIX}_${SOURCE}_${i}.pass.bed
-	SOURCE_REJECT=${PREFIX}_${SOURCE}_${i}.reject.bed
-	SOURCE_EXTRACT=${PREFIX}_${SOURCE}_${i}.reject.extract.bed
-	SOURCE_JUMP_CHR=${PREFIX}_${SOURCE}_${i}.jump_CHR.bed
-	SOURCE_JUMP_POS=${PREFIX}_${SOURCE}_${i}.jump_POS.bed
+	SOURCE_PASS_PREV=${OUT_DIR}/${PREFIX}_${SOURCE}_${p}.pass.bed
+	SOURCE_OUT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.out.bed
+	SOURCE_PASS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.pass.bed
+	SOURCE_REJECT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.bed
+	SOURCE_EXTRACT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.extract.bed
+	SOURCE_JUMP_CHR=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.jump_CHR.bed
+	SOURCE_JUMP_POS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.jump_POS.bed
 
-	TARGET_OUT=${PREFIX}_${TARGET}_${i}.out.bed
-	TARGET_PASS=${PREFIX}_${TARGET}_${i}.pass.bed
-	TARGET_REJECT=${PREFIX}_${TARGET}_${i}.reject.bed
-	TARGET_EXTRACT=${PREFIX}_${TARGET}_${i}.reject.extract.bed
-	TARGET_JUMP_CHR=${PREFIX}_${TARGET}_${i}.jump_CHR.bed
+	TARGET_OUT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.out.bed
+	TARGET_PASS=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.bed
+	TARGET_REJECT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.bed
+	TARGET_EXTRACT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.extract.bed
+	TARGET_JUMP_CHR=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.jump_CHR.bed
 
 
 

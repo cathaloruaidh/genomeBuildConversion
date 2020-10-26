@@ -166,13 +166,13 @@ do
         bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz | awk -v OFS="\t" -v SOURCE=${BUILD} '{print $1,$2-1,$2,$1 "_" $2 "_" $3 "_" $4 "_" SOURCE }' | gzip -c - > ${BUILD}/${SAMPLE}.${BUILD}.annotate.bed.gz
         bcftools annotate -c CHROM,FROM,TO,ID -a ${BUILD}/${SAMPLE}.${BUILD}.annotate.bed.gz -Oz -o ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz
         tabix ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz
-        bcftools view -Oz --max-alleles 2 --types snps -R ${BUILD}/ConfidentRegions.${BUILD}.bed.gz ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz > ${BUILD}/${SAMPLE}.annotate_bi_SNV.original.vcf.gz 
+        bcftools view -Oz --max-alleles 2 --types snps -R ${BUILD}/ConfidentRegions.${BUILD}.bed.gz ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz > ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf.gz 
         
         echo -e "\tExtracting SNVs at stable positions"
-        vcftools --gzvcf ${BUILD}/${SAMPLE}.annotate.bi_SNV.original.vcf.gz --exclude-bed ${MAIN_DIR}/CUP_FILES/FASTA_BED.ALL_${BUILD}.novel_CUPs.bed --recode --recode-INFO-all --out ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV 
-        mv ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.recode.vcf ${BUILD}/${SAMPLE}.annotate.bi_SNV.stable.vcf
-        bgzip -f ${BUILD}/${SAMPLE}.annotate.bi_SNV.stable.vcf
-        tabix -f ${BUILD}/${SAMPLE}.annotate.bi_SNV.stable.vcf.gz
+        vcftools --gzvcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf.gz --exclude-bed ${MAIN_DIR}/CUP_FILES/FASTA_BED.ALL_${BUILD}.novel_CUPs.bed --recode --recode-INFO-all --out ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV 
+        mv ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.recode.vcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf
+        bgzip -f ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf
+        tabix -f ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf.gz
     done
 done
 ```
@@ -180,7 +180,7 @@ done
 Create the directories
 ```
 for BUILD in GRCh37 GRCh38
-    do for CAT in Original Stable
+    do for CAT in original stable
         do for SAMPLE in NA12877 NA12878
             do for TYPE in VCF BED
                 do mkdir -p ${BUILD}/${CAT}/${SAMPLE}/${TYPE}
@@ -195,27 +195,29 @@ Finally, download reference genomes for GRCh37 and GRCh38:
 ```
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.gz -O ${REF_DIR}/GRCh37.fa.gz
 wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa -O ${REF_DIR}/GRCh38.fa
+bgzip ${REF_DIR}/GRCh38.fa
 ```
 
-
-## 4.2&nbsp; VCF Data
-First, select the original or the stable data (i.e. SNVs at CUPs pre-excluded):
+Select the original or the stable data (i.e. SNVs at CUPs pre-excluded):
 ```
 CATEGORY=original
 # or
 CATEGORY=stable
 ```
 
-Additionally, select the 
+Additionally, select the WGS sample. 
 ```
 SAMPLE=NA12877
 # or
 SAMPLE=NA12878
 ```
 
+
+
+## 4.2&nbsp; VCF Data
 Apply the algorithm: 
 ```
-${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${BUILD}/${SAMPLE}.${SOURCE}.${NAME}.vcf 1 2 ${SOURCE}
+${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF
 ```
 
 Check that there are no entries in the files of unstable regions for the second iteration. 
@@ -228,26 +230,53 @@ for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*_2.*jump*" ) ; 
 
 Combine the results. 
 ```
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*CHR_jump.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*CHR_jump.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_1.bed ; fi
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*CHR_jump.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_1.bed ; fi
 
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*CHR_jump.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*CHR_jump.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.CHR_jump_2.bed ; fi
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*CHR_jump.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_2.bed ; fi
 
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*POS_jump.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*POS_jump.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.POS_jump.bed ; fi
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*POS_jump.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.POS_jump.bed ; fi
 
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find VCF/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_1.bed ; fi
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_1.bed ; fi
 
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.reject_2.bed ; fi
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_2.bed ; fi
 
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_1.bed ; fi
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; fi
 
-N=$(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" | wc -l  ) ; if [[ ${N}> 0 ]] ; then cat $(  find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" ) | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${NAME}.VCF.mismatch_2.bed ; fi 
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; fi 
 ```
 
 
+## 4.3&nbsp; BED Data
+Convert VCF data to BED data
+```
+bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf.gz | awk -v OFS="\t" -v REF=${SOURCE} '{print $1,$2-1,$2,$1 "_" $2-1 "_" $3 "_" $4 "_" REF }'  > ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.bed
+```
 
+Apply the algorithm: 
+```
+${SCRIPT_DIR}/loop_${TOOL}.WGS.BED.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.bed 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/BED
+```
 
+Check that there are no entries in the files of unstable regions for the second iteration. 
+All commands should return zeroes for the files. 
+```
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*_2.*jump*" ) ; do wc -l ${FILE} ; done
+```
 
+Combine the results. 
+```
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_*CHR_jump.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_1.bed ; fi
 
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*CHR_jump.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_2.bed ; fi
+
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*POS_jump.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.POS_jump.bed ; fi
+
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; fi
+
+FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; fi
+```
 
 
 

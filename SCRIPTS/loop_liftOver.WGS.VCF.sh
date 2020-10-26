@@ -1,9 +1,5 @@
 #! /bin/bash
 
-#FILE=NA12878.vcf
-#PREFIX=NA12878
-
-
 
 
 FILE=${1}
@@ -35,8 +31,8 @@ then
 	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg19ToHg38.over.chain.gz
 	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg38ToHg19.over.chain.gz
 
-	REF_SOURCE=/home/shared/cathal/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
-	REF_TARGET=/home/shared/cathal/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
+	REF_SOURCE=${REF_DIR}/GRCh37.fa.gz
+	REF_TARGET=${REF_DIR}/GRCh38.fa.gz
 else
 	SOURCE="GRCh38"
 	TARGET="GRCh37"
@@ -44,8 +40,8 @@ else
 	CHAIN_SOURCE_TO_TARGET=${REF_DIR}/hg38ToHg19.over.chain.gz
 	CHAIN_TARGET_TO_SOURCE=${REF_DIR}/hg19ToHg38.over.chain.gz
 
-	REF_SOURCE=/home/shared/cathal/reference/ReferenceGenome/GRCh38/GRCh38_full_analysis_set_plus_decoy_hla.fa
-	REF_TARGET=/home/shared/cathal/reference/ReferenceGenome/hg19/ucsc.hg19.fasta
+	REF_SOURCE=${REF_DIR}/GRCh38.fa.gz
+	REF_TARGET=${REF_DIR}/GRCh37.fa.gz
 fi
 
 
