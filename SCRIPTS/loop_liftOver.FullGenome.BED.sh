@@ -41,9 +41,9 @@ fi
 
 if [[ ! -z "${5}" ]]
 then
-    OUT_DIR=${PWD}
-else
     OUT_DIR=${5}
+else
+    OUT_DIR=${PWD}
 fi
 
 
