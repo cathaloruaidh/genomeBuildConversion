@@ -111,7 +111,6 @@ The first two commands should return zeroes for all files, and the third command
 for FILE in $( find . -iname '*GRCh37_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
 for FILE in $( find . -iname '*GRCh38_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
 for FILE in $( find . -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
-cd ../ ; 
 ```
 
 
@@ -120,7 +119,7 @@ For each of the five unstable regions, combine all the individual base-pair posi
 Additionally, combine the four novel unstable regions into one file. 
 
 ```
-cd ../COMBINE ; 
+cd ${MAIN_DIR}/COMBINE ; 
 
 cat $( find ../CHR/ -iname "*${TARGET}_*jump_CHR.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.CHR_jump_1.bed
 cat $( find ../CHR/ -iname "*${SOURCE}_*jump_CHR.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.CHR_jump_2.bed
@@ -135,7 +134,7 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 # 4&nbsp; Real WGS Example
 ## 4.1&nbsp; Download
-Get the VCF files for NA12877 and NA12878 from the Illumina Platinum Genomes project. 
+Download VCF files for NA12877 and NA12878 from the [Illumina Platinum Genomes project](https://www.illumina.com/platinumgenomes.html). 
 
 ```
 cd ${MAIN_DIR}/WGS_DATA

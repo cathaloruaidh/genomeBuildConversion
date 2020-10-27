@@ -53,7 +53,7 @@ else
 fi
 
 
-cp ${PREFIX}.vcf ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.vcf
+cp ${FILE} ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.vcf
 
 
 for i in $(seq ${FROM} ${TO} )

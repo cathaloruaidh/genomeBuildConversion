@@ -53,7 +53,7 @@ else
 fi
 
 
-cp ${PREFIX}.bed ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.bed
+cp ${FILE} ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.bed
 
 
 for i in $(seq ${FROM} ${TO} )
