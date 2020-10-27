@@ -191,12 +191,10 @@ done
 Finally, download reference genomes for GRCh37 and GRCh38, and index:
 ```
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.gz -O ${REF_DIR}/GRCh37.fa.gz
-bwa index ${REF_DIR}/GRCh37.fa.gz
 java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh37.fa.gz OUTPUT=${REF_DIR}/GRCh37.fa.dict
 
 wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa -O ${REF_DIR}/GRCh38.fa
 bgzip ${REF_DIR}/GRCh38.fa
-bwa index ${REF_DIR}/GRCh38.fa.gz
 java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh38.fa.gz OUTPUT=${REF_DIR}/GRCh38.fa.dict
 
 ```
