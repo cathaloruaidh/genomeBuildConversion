@@ -14,12 +14,12 @@ Navigation:
 
 # 2&nbsp; Set Up
 ## 2.1&nbsp; Notes
-- Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. 
-- Reference FASTA files are not included due to file size, but are required for the application to the real WGS data and should be stored in the REFERENCE directory. 
+- Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Additionally, `bwa` is required for the WGS example. 
+- Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
 - This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
 - For a single run of the algorithm, a source and target such as GRCh37 and GRCh38 must be chosen as well as a tool (`liftOver` or `CrossMap`). 
-- Included in the download is JAR files for `picard` and `GATK`. 
+- For the WGS example, JAR files for `picard` and `GATK` are included in the REFERENCE directory. 
 
 
 
