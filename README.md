@@ -185,6 +185,8 @@ do
         echo -e "\tExtracting SNVs at stable positions"
         vcftools --vcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf --exclude-bed ${MAIN_DIR}/CUP_FILES/FASTA_BED.ALL_${BUILD}.novel_CUPs.bed --recode --recode-INFO-all --out ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV 
         mv ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.recode.vcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf
+        
+        echo -e "\n\n"
     done
 done
 
