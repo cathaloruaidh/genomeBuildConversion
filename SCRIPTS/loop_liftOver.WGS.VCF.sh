@@ -72,8 +72,8 @@ do
 	SOURCE_PASS_BED=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.pass.bed
 	SOURCE_REJECT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.vcf
 	SOURCE_EXTRACT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.extract.bed
-	SOURCE_JUMP_CHR=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.CHR_jump.bed
-	SOURCE_JUMP_POS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.POS_jump.bed
+	SOURCE_JUMP_CHR=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.jump_CHR.bed
+	SOURCE_JUMP_POS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.jump_POS.bed
 	SOURCE_MISMATCH=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.mismatch.bed
 	SOURCE_REMOVE=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.remove.txt
 
@@ -82,7 +82,7 @@ do
 	TARGET_PASS_BED=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.bed
 	TARGET_REJECT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.vcf
 	TARGET_EXTRACT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.extract.bed
-	TARGET_JUMP_CHR=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.CHR_jump.bed
+	TARGET_JUMP_CHR=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.jump_CHR.bed
 	TARGET_MISMATCH=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.mismatch.bed
 	TARGET_REMOVE=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.remove.txt
 
