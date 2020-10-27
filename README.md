@@ -166,13 +166,11 @@ do
         bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz | awk -v OFS="\t" -v SOURCE=${BUILD} '{print $1,$2-1,$2,$1 "_" $2 "_" $3 "_" $4 "_" SOURCE }' | gzip -c - > ${BUILD}/${SAMPLE}.${BUILD}.annotate.bed.gz
         bcftools annotate -c CHROM,FROM,TO,ID -a ${BUILD}/${SAMPLE}.${BUILD}.annotate.bed.gz -Oz -o ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz ${BUILD}/${SAMPLE}.${BUILD}.vcf.gz
         tabix ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz
-        bcftools view -Oz --max-alleles 2 --types snps -R ${BUILD}/ConfidentRegions.${BUILD}.bed.gz ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz > ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf.gz 
+        bcftools view -Ov --max-alleles 2 --types snps -R ${BUILD}/ConfidentRegions.${BUILD}.bed.gz ${BUILD}/${SAMPLE}.${BUILD}.annotate.vcf.gz > ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf
         
         echo -e "\tExtracting SNVs at stable positions"
-        vcftools --gzvcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf.gz --exclude-bed ${MAIN_DIR}/CUP_FILES/FASTA_BED.ALL_${BUILD}.novel_CUPs.bed --recode --recode-INFO-all --out ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV 
+        vcftools --vcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.original.vcf --exclude-bed ${MAIN_DIR}/CUP_FILES/FASTA_BED.ALL_${BUILD}.novel_CUPs.bed --recode --recode-INFO-all --out ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV 
         mv ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.recode.vcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf
-        bgzip -f ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf
-        tabix -f ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf.gz
     done
 done
 ```
@@ -277,6 +275,16 @@ FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_
 
 FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; fi
 ```
+
+
+## 4.4&nbsp; Compare Data
+Get the jaccard index between the BED and VCF data. 
+```
+for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/*BED*.bed ; do VCF=$( echo ${BED} | sed -e 's/BED/VCF/g' ) ; echo -e "${BED}\t$(bedtools jaccard -a ${BED} -b ${VCF} | cut -f3 | tail -1 )" ; done | column -t 
+```
+
+
+
 
 
 
