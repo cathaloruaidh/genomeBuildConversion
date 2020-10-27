@@ -1,7 +1,9 @@
 # 1&nbsp; Genome Build Conversion
-Code for identifying positions in the human genome that are unstable when converting between GRCh37 and GRCh38, using either liftOver or CrossMap. 
+Code for identifying positions in the human genome that are unstable when converting between GRCh37 and GRCh38, using either `liftOver` or `CrossMap`. 
+The data in mind for this procedure are single nucleotide variants (SNVs) obtained from whole genome sequencing (WGS). 
 Previous work has highlighted unusual behaviour in build conversion, such as SNVs mapping to a different chromosome. 
 BED files describing these conversion-unstable positions (CUPs) are provided, as well as a combined file of all regions ("novel_CUPs"). 
+These positions are determined by the chain file, and are the same regardless of the conversion tool. 
 Pre-excluding SNVs in these regions before converting between builds removes all unstable behaviour. 
 
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). If you use the exclude files or this algorithm in your publication, please cite the following paper:
@@ -55,14 +57,14 @@ REGIONS=${REF_DIR}/GRCh38.regions.Standard.bed
 ```
 
 
-Run for liftOver
+Run for liftOver: 
 ```
 TOOL=liftOver
 export TOOL
 LOOP_BED=${SCRIPT_DIR}/loop_${TOOL}.FullGenome.BED.sh
 ```
 
-Run for CrossMap
+Run for CrossMap: 
 ```
 TOOL=CrossMap
 export TOOL
@@ -88,7 +90,7 @@ parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3}
 
 
 ## 3.2&nbsp; Apply Algorithm
-Run the main script to identify unstable regions. 
+Run the main script to identify unstable positions. 
 The loop script takes as arguments the input filename, the start iteration, the end iteration and the source build. 
 Both scripts will add the tool name to the file output, so there should be no over-writing of output files. 
 This is parallelised using GNU parallel, with 12 CPUs available. 
@@ -104,7 +106,7 @@ Two iterations were run above to determine if the algorithm was stable, or if ne
 
 
 ## 3.3&nbsp; Sanity Check
-Check if there are entries in the files of unstable regions for the second iteration by counting the lines (regardless of the source/target builds). 
+Check if there are entries in the files of unstable positions for the second iteration by counting the lines (regardless of the source/target builds). 
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 
 ```
@@ -115,8 +117,8 @@ for FILE in $( find . -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
 
 
 ## 3.4&nbsp; Combine Sites
-For each of the five unstable regions, combine all the individual base-pair positions and collapse into multi-site regions. 
-Additionally, combine the four novel unstable regions into one file. 
+For each of the five CUP files, combine all the individual base-pair positions and collapse into multi-site regions. 
+Additionally, combine the four novel CUPs into one file. 
 
 ```
 cd ${MAIN_DIR}/COMBINE ; 
@@ -133,8 +135,11 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 
 # 4&nbsp; Real WGS Example
+As a proof of principle, a modified version of the above algorithm can be applied to WGS data. 
+`liftOver` is implemented by the `LiftoverVCF` module from `picard`, since `liftOver` cannot directly process VCF files. 
+
 ## 4.1&nbsp; Download
-Download VCF files for NA12877 and NA12878 from the [Illumina Platinum Genomes project](https://www.illumina.com/platinumgenomes.html). 
+Download VCF files for NA12877 and NA12878 from the [Illumina Platinum Genomes project](https://www.illumina.com/platinumgenomes.html): 
 
 ```
 cd ${MAIN_DIR}/WGS_DATA
@@ -155,7 +160,7 @@ wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12878/NA12878.vcf.gz.tbi -O GRCh38/NA12878.GRCh38.vcf.gz.tbi
 ```
 
-Annotate the variants with unique identifier and extract bi-allelic SNVs subset to confident regions. 
+Annotate the variants with unique identifier and extract bi-allelic SNVs subset to confident regions: 
 ```
 for SAMPLE in NA12877 NA12878
 do 
@@ -174,7 +179,7 @@ do
 done
 ```
 
-Create the directories
+Create the directories: 
 ```
 for BUILD in GRCh37 GRCh38
     do for CAT in original stable
@@ -196,7 +201,7 @@ bwa index ${REF_DIR}/GRCh37.fa
 java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh37.fa OUTPUT=${REF_DIR}/GRCh37.fa.dict
 
 wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa -O ${REF_DIR}/GRCh38.fa
-${REF_DIR}/GRCh38.fa
+bwa index ${REF_DIR}/GRCh38.fa
 java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh38.fa OUTPUT=${REF_DIR}/GRCh38.fa.dict
 
 ```
@@ -208,7 +213,7 @@ CATEGORY=original
 CATEGORY=stable
 ```
 
-Additionally, select the WGS sample. 
+Additionally, select the WGS sample: 
 ```
 SAMPLE=NA12877
 # or
@@ -223,7 +228,7 @@ Apply the algorithm:
 . ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF
 ```
 
-Check that there are no entries in the files of unstable regions for the second iteration. 
+Check that there are no entries in the files of CUPs for the second iteration. 
 All commands should return zeroes for the files. 
 ```
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
@@ -260,7 +265,7 @@ Apply the algorithm:
 . ${SCRIPT_DIR}/loop_${TOOL}.WGS.BED.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.bed 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/BED
 ```
 
-Check that there are no entries in the files of unstable regions for the second iteration. 
+Check that there are no entries in the files of CUPs for the second iteration. 
 All commands should return zeroes for the files. 
 ```
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
