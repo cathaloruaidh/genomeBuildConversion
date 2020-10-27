@@ -10,6 +10,7 @@ If you have any queries or feedback, please contact the [author](mailto:cathalor
 
 Navigation: 
 - [Set Up](#2-set-up) 
+
 - [Full Genome Data](#3-full-genome-data)
 - [Real WGS Example](#4-real-wgs-example)
 
@@ -38,6 +39,7 @@ export REF_DIR
 export SCRIPT_DIR
 mkdir CHR COMBINE WGS_DATA ;
 chmod +x ${SCRIPT_DIR}/*sh
+
 ```
 
 Run for GRCh37: 
@@ -46,6 +48,7 @@ SOURCE=GRCh37
 TARGET=GRCh38
 export SOURCE TARGET
 REGIONS=${REF_DIR}/GRCh37.region.Standard.bed
+
 ```
 
 Run for GRCh38: 
@@ -54,6 +57,7 @@ SOURCE=GRCh38
 TARGET=GRCh37
 export SOURCE TARGET
 REGIONS=${REF_DIR}/GRCh38.regions.Standard.bed 
+
 ```
 
 
@@ -62,6 +66,7 @@ Run for liftOver:
 TOOL=liftOver
 export TOOL
 LOOP_BED=${SCRIPT_DIR}/loop_${TOOL}.FullGenome.BED.sh
+
 ```
 
 Run for CrossMap: 
@@ -69,6 +74,7 @@ Run for CrossMap:
 TOOL=CrossMap
 export TOOL
 LOOP_BED=${SCRIPT_DIR}/loop_${TOOL}.FullGenome.BED.sh
+
 ```
 
 
@@ -86,6 +92,7 @@ This is parallelised for speed, as it can take up to 90 minutes on the largest c
 cd CHR 
 date ;
 parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3} ${SOURCE}" :::: ${REGIONS}
+
 ```
 
 
@@ -98,6 +105,7 @@ This is parallelised using GNU parallel, with 12 CPUs available.
 
 ```
 parallel --plus -j12  ". ${LOOP_BED} {} 1 2 ${SOURCE}" ::: $( ls -d *_${SOURCE} | sort -V )
+
 ```
 
 The script was set up so that iterations could be interrupted and restarted if neccessary. 
@@ -113,6 +121,7 @@ The first two commands should return zeroes for all files, and the third command
 for FILE in $( find . -iname '*GRCh37_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
 for FILE in $( find . -iname '*GRCh38_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
 for FILE in $( find . -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
+
 ```
 
 
@@ -158,6 +167,7 @@ wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12877/NA12877.vcf.gz.tbi  -O GRCh38/NA12877.GRCh38.vcf.gz.tbi
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12878/NA12878.vcf.gz -O GRCh38/NA12878.GRCh38.vcf.gz
 wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_variants/NA12878/NA12878.vcf.gz.tbi -O GRCh38/NA12878.GRCh38.vcf.gz.tbi
+
 ```
 
 Annotate the variants with unique identifier and extract bi-allelic SNVs subset to confident regions: 
@@ -177,6 +187,7 @@ do
         mv ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.recode.vcf ${BUILD}/${SAMPLE}.${BUILD}.annotate.bi_SNV.stable.vcf
     done
 done
+
 ```
 
 Create the directories: 
@@ -197,12 +208,12 @@ Finally, download reference genomes for GRCh37 and GRCh38, and index:
 ```
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.gz -O ${REF_DIR}/GRCh37.fa.gz
 gunzip ${REF_DIR}/GRCh37.fa.gz
-bwa index ${REF_DIR}/GRCh37.fa
-java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh37.fa OUTPUT=${REF_DIR}/GRCh37.fa.dict
+samtools faidx ${REF_DIR}/GRCh37.fa
+java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh37.fa OUTPUT=${REF_DIR}/GRCh37.dict
 
 wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa -O ${REF_DIR}/GRCh38.fa
-bwa index ${REF_DIR}/GRCh38.fa
-java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh38.fa OUTPUT=${REF_DIR}/GRCh38.fa.dict
+samtools faidx ${REF_DIR}/GRCh38.fa
+java -jar ${REF_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh38.fa OUTPUT=${REF_DIR}/GRCh38.dict
 
 ```
 
@@ -211,6 +222,7 @@ Select the original or the stable data (i.e. SNVs at CUPs pre-excluded):
 CATEGORY=original
 # or
 CATEGORY=stable
+
 ```
 
 Additionally, select the WGS sample: 
@@ -218,6 +230,7 @@ Additionally, select the WGS sample:
 SAMPLE=NA12877
 # or
 SAMPLE=NA12878
+
 ```
 
 
@@ -226,6 +239,7 @@ SAMPLE=NA12878
 Apply the algorithm: 
 ```
 . ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF
+
 ```
 
 Check that there are no entries in the files of CUPs for the second iteration. 
@@ -234,6 +248,7 @@ All commands should return zeroes for the files.
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*_2.*jump*" ) ; do wc -l ${FILE} ; done
+
 ```
 
 Combine the results. 
@@ -251,6 +266,7 @@ FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_
 FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; fi
 
 FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; fi 
+
 ```
 
 
@@ -258,11 +274,13 @@ FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_
 Convert VCF data to BED data
 ```
 bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf.gz | awk -v OFS="\t" -v REF=${SOURCE} '{print $1,$2-1,$2,$1 "_" $2-1 "_" $3 "_" $4 "_" REF }'  > ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.bed
+
 ```
 
 Apply the algorithm: 
 ```
 . ${SCRIPT_DIR}/loop_${TOOL}.WGS.BED.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.bed 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/BED
+
 ```
 
 Check that there are no entries in the files of CUPs for the second iteration. 
@@ -271,6 +289,7 @@ All commands should return zeroes for the files.
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
 for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*_2.*jump*" ) ; do wc -l ${FILE} ; done
+
 ```
 
 Combine the results. 
@@ -284,6 +303,7 @@ FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_
 FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; fi
 
 FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; fi
+
 ```
 
 
@@ -291,6 +311,7 @@ FILES=$( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_
 Get the jaccard index between the BED and VCF data. 
 ```
 for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/*BED*.bed ; do VCF=$( echo ${BED} | sed -e 's/BED/VCF/g' ) ; echo -e "${BED}\t$(bedtools jaccard -a ${BED} -b ${VCF} | cut -f3 | tail -1 )" ; done | column -t 
+
 ```
 
 
