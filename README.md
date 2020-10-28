@@ -329,7 +329,7 @@ for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/*BED*.bed ; do CAT=$( basename ${BED}
 
 ```
 
-
+Note that for the `stable` data, the novel CUP files will be empty, so the jaccard index will be `-nan`. 
 
 
 
