@@ -325,7 +325,7 @@ for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGOR
 Similarly, we can confirm that the BED-based data is contained within the full-genome data. 
 As before, these should all be equal to 1. 
 ```
-for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.*.bed ; do CAT=$( basename ${BED} | cut -f6 -d. ) ; echo -e "${BED}\t$(bedtools intersect -a ${BED} -b ${MAIN_DIR}/COMBINE/FASTA_BED.${TOOL}.ALL_${BUILD}.${CAT}.bed | bedtools sort -i - | bedtools jaccard -a - -b ${BED} | cut -f3 | tail -1 )" ; done | column -t
+for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.*.bed ; do CAT=$( basename ${BED} | cut -f6 -d. ) ; echo -e "${BED}\t$(bedtools intersect -a ${BED} -b ${MAIN_DIR}/COMBINE/FASTA_BED.${TOOL}.ALL_${SOURCE}.${CAT}.bed | bedtools sort -i - | bedtools jaccard -a - -b ${BED} | cut -f3 | tail -1 )" ; done | column -t
 
 ```
 
