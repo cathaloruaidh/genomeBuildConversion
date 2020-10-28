@@ -318,19 +318,18 @@ The VCF-based data should be contained within the BED-based data, with differenc
 To confirm this, we take the intersection of each of the categories from the BED-based data with the VCF-based data, and take the jaccard index of this intersection with the VCF-based data.
 This proportion overlap should be equal to 1 for all files, indicating that the VCF-based data is a subset of the BED-based data. 
 ```
-for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/*BED*.bed ; do VCF=$( echo ${BED} | sed -e 's/BED/VCF/g' ) ; echo -e "${BED}\t$(bedtools intersect -a ${VCF} -b ${BED} | bedtools sort -i - | bedtools jaccard -a - -b ${VCF} | cut -f3 | tail -1 )" ; done | column -t
+for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.*.bed ; do VCF=$( echo ${BED} | sed -e 's/BED/VCF/g' ) ; echo -e "${BED}\t$(bedtools intersect -a ${VCF} -b ${BED} | bedtools sort -i - | bedtools jaccard -a - -b ${VCF} | cut -f3 | tail -1 )" ; done | column -t
 
 ```
 
 Similarly, we can confirm that the BED-based data is contained within the full-genome data. 
 As before, these should all be equal to 1. 
 ```
-for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/*BED*.bed ; do CAT=$( basename ${BED} | cut -f6 -d. ) ; echo -e "${BED}\t$(bedtools intersect -a ${BED} -b ${MAIN_DIR}/COMBINE/FASTA_BED.${TOOL}.ALL_${BUILD}.${CAT}.bed | bedtools sort -i - | bedtools jaccard -a - -b ${BED} | cut -f3 | tail -1 )" ; done | column -t
+for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.*.bed ; do CAT=$( basename ${BED} | cut -f6 -d. ) ; echo -e "${BED}\t$(bedtools intersect -a ${BED} -b ${MAIN_DIR}/COMBINE/FASTA_BED.${TOOL}.ALL_${BUILD}.${CAT}.bed | bedtools sort -i - | bedtools jaccard -a - -b ${BED} | cut -f3 | tail -1 )" ; done | column -t
 
 ```
 
 Note that for the `stable` data, the novel CUP files will be empty, so the jaccard index will be `-nan`. 
-
 
 
 
