@@ -118,9 +118,9 @@ Check if there are entries in the files of unstable positions for the second ite
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 
 ```
-for FILE in $( find . -iname '*GRCh37_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
-for FILE in $( find . -iname '*GRCh38_2.reject.extract.bed' ) ; do wc -l ${FILE} ; done
-for FILE in $( find . -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
+for FILE in $( find *_${SOURCE} -iname "*${TOOL}_GRCh37_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find *_${SOURCE} -iname "*${TOOL}_GRCh38_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find *_${SOURCE} -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
 
 ```
 
@@ -132,11 +132,11 @@ Additionally, combine the four novel CUPs into one file.
 ```
 cd ${MAIN_DIR}/COMBINE ; 
 
-cat $( find ../CHR/ -iname "*${TARGET}_*jump_CHR.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.CHR_jump_1.bed
-cat $( find ../CHR/ -iname "*${SOURCE}_*jump_CHR.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.CHR_jump_2.bed
-cat $( find ../CHR/ -iname "*${SOURCE}_*jump_POS.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.POS_jump.bed
-cat $( find ../CHR/ -iname "*${SOURCE}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.reject_1.bed
-cat $( find ../CHR/ -iname "*${TARGET}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.reject_2.bed
+cat $( find ../CHR/*_${SOURCE} -iname "FASTA_BED.chr*_${SOURCE}.${TOOL}_${TARGET}_*.jump_CHR.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.CHR_jump_1.bed
+cat $( find ../CHR/*_${SOURCE} -iname "FASTA_BED.chr*_${SOURCE}.${TOOL}_${SOURCE}_*.jump_CHR.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.CHR_jump_2.bed
+cat $( find ../CHR/*_${SOURCE} -iname "FASTA_BED.chr*_${SOURCE}.${TOOL}_${SOURCE}_*.jump_POS.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.POS_jump.bed
+cat $( find ../CHR/*_${SOURCE} -iname "FASTA_BED.chr*_${SOURCE}.${TOOL}_${SOURCE}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.reject_1.bed
+cat $( find ../CHR/*_${SOURCE} -iname "FASTA_BED.chr*_${SOURCE}.${TOOL}_${TARGET}_*.reject.extract.bed" ) | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.reject_2.bed
 cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*reject_2.bed | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.novel_CUPs.bed
 
 ```
