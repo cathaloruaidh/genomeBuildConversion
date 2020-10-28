@@ -94,6 +94,7 @@ date ;
 parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3} ${SOURCE}" :::: ${REGIONS}
 
 ```
+If you are working on a different genome that GRCh37 or GRCh38, you can supply alternate REGION files in the REFERENCE directory. 
 
 
 ## 3.2&nbsp; Apply Algorithm
@@ -120,7 +121,7 @@ The first two commands should return zeroes for all files, and the third command
 ```
 for FILE in $( find *_${SOURCE} -iname "*${TOOL}_GRCh37_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
 for FILE in $( find *_${SOURCE} -iname "*${TOOL}_GRCh38_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find *_${SOURCE} -iname '*_2.jump*' ) ; do wc -l ${FILE} ; done
+for FILE in $( find *_${SOURCE} -iname '*${TOOL}*_2.jump*' ) ; do wc -l ${FILE} ; done
 
 ```
 
@@ -140,6 +141,7 @@ cat $( find ../CHR/*_${SOURCE} -iname "FASTA_BED.chr*_${SOURCE}.${TOOL}_${TARGET
 cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*reject_2.bed | bedtools sort -i - | bedtools merge -i - > FASTA_BED.${TOOL}.ALL_${SOURCE}.novel_CUPs.bed
 
 ```
+
 
 
 
