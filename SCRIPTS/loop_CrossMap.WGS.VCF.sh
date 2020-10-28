@@ -78,7 +78,7 @@ do
 	SOURCE_MISMATCH=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.mismatch.bed
 	SOURCE_REMOVE=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.remove.txt
 
-	TARGET_OUT=${OUT_DIR}/{PREFIX}_${TARGET}_${i}.out.vcf
+	TARGET_OUT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.out.vcf
 	TARGET_SORT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.out.sort.vcf
 	TARGET_PASS=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.vcf
 	TARGET_PASS_BED=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.bed
