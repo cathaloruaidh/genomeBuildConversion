@@ -66,19 +66,19 @@ do
 
 	p=$(( ${i} - 1 ))	
 
-	SOURCE_PASS_PREV=${OUT_DIR}/${PREFIX}_${SOURCE}_${p}.pass.bed
-	SOURCE_OUT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.out.bed
-	SOURCE_PASS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.pass.bed
-	SOURCE_REJECT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.bed
-	SOURCE_EXTRACT=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.reject.extract.bed
-	SOURCE_JUMP_CHR=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.jump_CHR.bed
-	SOURCE_JUMP_POS=${OUT_DIR}/${PREFIX}_${SOURCE}_${i}.jump_POS.bed
+	SOURCE_PASS_PREV=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${p}.pass.bed
+	SOURCE_OUT=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${i}.out.bed
+	SOURCE_PASS=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${i}.pass.bed
+	SOURCE_REJECT=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${i}.reject.bed
+	SOURCE_EXTRACT=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${i}.reject.extract.bed
+	SOURCE_JUMP_CHR=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${i}.jump_CHR.bed
+	SOURCE_JUMP_POS=${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_${i}.jump_POS.bed
 
-	TARGET_OUT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.out.bed
-	TARGET_PASS=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.pass.bed
-	TARGET_REJECT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.bed
-	TARGET_EXTRACT=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.reject.extract.bed
-	TARGET_JUMP_CHR=${OUT_DIR}/${PREFIX}_${TARGET}_${i}.jump_CHR.bed
+	TARGET_OUT=${OUT_DIR}/${PREFIX}_liftOver_${TARGET}_${i}.out.bed
+	TARGET_PASS=${OUT_DIR}/${PREFIX}_liftOver_${TARGET}_${i}.pass.bed
+	TARGET_REJECT=${OUT_DIR}/${PREFIX}_liftOver_${TARGET}_${i}.reject.bed
+	TARGET_EXTRACT=${OUT_DIR}/${PREFIX}_liftOver_${TARGET}_${i}.reject.extract.bed
+	TARGET_JUMP_CHR=${OUT_DIR}/${PREFIX}_liftOver_${TARGET}_${i}.jump_CHR.bed
 
 
 
