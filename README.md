@@ -142,11 +142,12 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 ```
 
-## 3.5&nbsp; Compare Tools
+## 3.5&nbsp; Compare 
 To confirm that both `liftOver` and `CrossMap` give identical output for each of the CUP caregoties, we calculate the jaccard indices between the files:
 ```
 cd ${MAIN_DIR}/COMBINE
 for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed -e 's/liftOver/CrossMap/g' ) ; echo -e "${LIFT}\t$( bedtools jaccard -a ${LIFT} -b ${CROSS} | cut -f3 | tail -1 )" ; echo  ; done | column -t 
+
 ```
 
 
