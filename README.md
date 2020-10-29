@@ -142,6 +142,12 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 ```
 
+## 3.5&nbsp; Compare Tools
+To confirm that both `liftOver` and `CrossMap` give identical output for each of the CUP caregoties, we calculate the jaccard indices between the files:
+```
+cd ${MAIN_DIR}/COMBINE
+for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed -e 's/liftOver/CrossMap/g' ) ; echo -e "${LIFT}\t$( bedtools jaccard -a ${LIFT} -b ${CROSS} | cut -f3 | tail -1 )" ; echo  ; done | column -t 
+```
 
 
 
@@ -323,13 +329,13 @@ for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGOR
 ```
 
 Similarly, we can confirm that the BED-based data is contained within the full-genome data. 
-As before, these should all be equal to 1. 
+Note that for the `stable` data, the novel CUP files should be empty, so the jaccard index will be `-nan`. 
+Otherwise, these should all be equal to 1. 
 ```
 for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.*.bed ; do CAT=$( basename ${BED} | cut -f6 -d. ) ; echo -e "${BED}\t$(bedtools intersect -a ${BED} -b ${MAIN_DIR}/COMBINE/FASTA_BED.${TOOL}.ALL_${SOURCE}.${CAT}.bed | bedtools sort -i - | bedtools jaccard -a - -b ${BED} | cut -f3 | tail -1 )" ; done | column -t
 
 ```
 
-Note that for the `stable` data, the novel CUP files will be empty, so the jaccard index will be `-nan`. 
 
 
 
