@@ -258,27 +258,27 @@ Apply the algorithm:
 Check that there are no entries in the files of CUPs for the second iteration. 
 All commands should return zeroes for the files. 
 ```
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "*_2.*jump*" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_*_2.*jump*" ) ; do wc -l ${FILE} ; done
 
 ```
 
 Combine the results. 
 ```
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_1.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${TARGET}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_1.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_2.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.CHR_jump_2.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*jump_POS.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.POS_jump.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*jump_POS.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.POS_jump.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_1.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_1.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_2.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${TARGET}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.reject_2.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${SOURCE}_*.mismatch.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*.mismatch.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_1.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}*_${TARGET}_*.mismatch.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; fi 
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}_${TOOL}*_${TARGET}_*.mismatch.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.VCF.mismatch_2.bed ; fi 
 
 ```
 
@@ -299,23 +299,23 @@ Apply the algorithm:
 Check that there are no entries in the files of CUPs for the second iteration. 
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 ```
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "*_2.*jump*" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}__2.*jump*" ) ; do wc -l ${FILE} ; done
 
 ```
 
 Combine the results. 
 ```
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_1.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}_${TOOL}*_${TARGET}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_1.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_2.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*jump_CHR.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.CHR_jump_2.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*jump_POS.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.POS_jump.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*jump_POS.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.POS_jump.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.POS_jump.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${SOURCE}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}_${TOOL}*_${SOURCE}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_1.bed ; fi
 
-FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}*_${TARGET}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; fi
+FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}_${TOOL}*_${TARGET}_*.reject.extract.bed" ) ) ; if [[ ${#FILES[@]} > 0 ]] ; then cat ${FILES[@]} | bedtools sort -i - | bedtools merge -i - > ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; else touch ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGORY}.BED.reject_2.bed ; fi
 
 ```
 
