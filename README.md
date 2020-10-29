@@ -341,13 +341,13 @@ We can confirm that pre-excluding variants at novel CUP positions (i.e. the `sta
 In the output for the following, note that the Venn-Diagram numbers should indeicate all variants are shared by both files. 
 Alternatively, in the Genotype Comparison Summary, the non-reference discordance rate should be zero. 
 ```
-bgzip -c ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TARGET}_2.pass.vcf > ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TARGET}_2.pass.vcf.gz
-tabix -f ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TARGET}_2.pass.vcf.gz
+bgzip -c ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf > ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz
+tabix -f ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz
 
-bgzip -c ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TARGET}_1.pass.vcf > ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TARGET}_1.pass.vcf.gz
-tabix -f ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TARGET}_1.pass.vcf.gz
+bgzip -c ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf > ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz
+tabix -f ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz
 
-vcf-compare -g ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TARGET}_2.pass.vcf.gz ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TARGET}_1.pass.vcf.gz | grep ^SN | cut -f 2-
+vcf-compare -g ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz | grep ^SN | cut -f 2-
 
 ```
 
