@@ -12,7 +12,7 @@ Navigation:
 - [Set Up](#2-set-up) 
 
 - [Full Genome Data](#3-full-genome-data)
-- [Real WGS Example](#4-real-wgs-example)
+- [WGS Example](#4-wgs-example) (experimental)
 
 
 # 2&nbsp; Set Up
