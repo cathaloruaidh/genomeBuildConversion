@@ -5,6 +5,7 @@ Previous work has highlighted unusual behaviour in build conversion, such as SNV
 BED files describing these conversion-unstable positions (CUPs) are provided, as well as a combined file of all regions ("novel_CUPs"). 
 These positions are determined by the chain file, and are the same regardless of the conversion tool. 
 Pre-excluding SNVs in these regions before converting between builds removes all unstable behaviour. 
+BED files for these positions may be downloaded in Section 2 below. 
 
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). 
 <!---
@@ -41,8 +42,6 @@ This is expected behaviour and is handled by the conversion tools.
 
 
 # 3&nbsp; Algorithm
-The remaining code in the README may be adapted to generate CUP files for other genome builds, or to evaluate the process as a proof of principle on sample WGS data. 
-
 ## 3.1&nbsp; Notes
 - Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Additionally, `bwa` is required for the WGS example. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
