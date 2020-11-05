@@ -7,7 +7,7 @@ These positions are determined by the chain file, and are the same regardless of
 Pre-excluding SNVs in these regions before converting between builds removes all unstable behaviour. 
 
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). 
-[//]: # If you use the exclude files or this algorithm in your publication, please cite the following paper:
+[//]: # (If you use the exclude files or this algorithm in your publication, please cite the following paper:)
 
 Navigation: 
 - [CUP Bed Files](#2-cup-bed-files)
