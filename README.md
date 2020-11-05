@@ -9,14 +9,32 @@ Pre-excluding SNVs in these regions before converting between builds removes all
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). If you use the exclude files or this algorithm in your publication, please cite the following paper:
 
 Navigation: 
-- [Set Up](#2-set-up) 
+- [Quick Start](#2-quick-start)
+- [Installation](#3-set-up) 
+- [Full Genome Data](#4-full-genome-data)
+- [WGS Example](#5-wgs-example) (experimental)
 
-- [Full Genome Data](#3-full-genome-data)
-- [WGS Example](#4-wgs-example) (experimental)
+
+# 2&nbsp; Quick Start
+First, download the BED file containing CUP positions for either GRCh37 or GRCh38: 
+```
+wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/master/CUP_FILES/FASTA_BED.ALL_GRCh37.novel_CUPs.bed
+# or 
+wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/master/CUP_FILES/FASTA_BED.ALL_GRCh38.novel_CUPs.bed
+
+```
+
+Variants in a VCF file at these positions can be removed (substitute the appropriate VCF file name and BED genome source build):
+```
+vcftools --vcf INPUT.vcf --exclude-bed FASTA_BED.ALL_GRCh3N.novel_CUPs.bed --recode --recode-INFO-all --out INPUT.stable
+
+```
+
+The variants in the resulting VCF file are now stable to conversion. 
 
 
-# 2&nbsp; Set Up
-## 2.1&nbsp; Notes
+# 3&nbsp; Set Up
+## 3.1&nbsp; Notes
 - Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Additionally, `bwa` is required for the WGS example. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
 - This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
@@ -26,7 +44,7 @@ Navigation:
 
 
 
-## 2.2&nbsp; Installation
+## 3.2&nbsp; Installation
 Download the resource material and initialise:
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
@@ -81,8 +99,8 @@ LOOP_BED=${SCRIPT_DIR}/loop_${TOOL}.FullGenome.BED.sh
 
 
 
-# 3&nbsp; Full Genome Data
-## 3.1&nbsp; Create Input BED
+# 4&nbsp; Full Genome Data
+## 4.1&nbsp; Create Input BED
 
 Generate the input BED files for the conversion process. 
 Every individual base-pair position in the genome will have a BED entry, based on the lengths of the standard 23 pairs of chromosomes.
@@ -97,7 +115,7 @@ parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3}
 If you are working on a different genome that GRCh37 or GRCh38, you can supply alternate REGION files in the REFERENCE directory. 
 
 
-## 3.2&nbsp; Apply Algorithm
+## 4.2&nbsp; Apply Algorithm
 Run the main script to identify unstable positions. 
 The loop script takes as arguments the input filename, the start iteration, the end iteration and the source build. 
 Both scripts will add the tool name to the file output, so there should be no over-writing of output files. 
@@ -114,7 +132,7 @@ Two iterations were run above to determine if the algorithm was stable, or if ne
 
 
 
-## 3.3&nbsp; Sanity Check
+## 4.3&nbsp; Sanity Check
 Check if there are entries in the files of unstable positions for the second iteration by counting the lines (regardless of the source/target builds). 
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 
@@ -126,7 +144,7 @@ for FILE in $( find *_${SOURCE} -iname '*${TOOL}*_2.jump*' ) ; do wc -l ${FILE} 
 ```
 
 
-## 3.4&nbsp; Combine Sites
+## 4.4&nbsp; Combine Sites
 For each of the five CUP files, combine all the individual base-pair positions and collapse into multi-site regions. 
 Additionally, combine the four novel CUPs into one file. 
 
@@ -142,7 +160,7 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 
 ```
 
-## 3.5&nbsp; Compare 
+## 4.5&nbsp; Compare 
 To confirm that both `liftOver` and `CrossMap` give identical output for each of the CUP caregoties, we calculate the jaccard indices between the files:
 ```
 cd ${MAIN_DIR}/COMBINE
@@ -152,14 +170,14 @@ for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed 
 
 
 
-# 4&nbsp; WGS Example
+# 5&nbsp; WGS Example
 Note, this section is currently experimental. 
 As a proof of principle, a modified version of the above algorithm can be applied to WGS data. 
 `liftOver` is implemented by the `LiftoverVCF` module from `picard`, since `liftOver` cannot directly process VCF files. 
 The VCF information can be collapsed down to position information only as BED files, and the original algorithm run. 
 The VCF-based data should be contained within the BED-based data, which in turn should be contained within the full-genome data. 
 
-## 4.1&nbsp; Download
+## 5.1&nbsp; Download
 Download VCF files for NA12877 and NA12878 from the [Illumina Platinum Genomes project](https://www.illumina.com/platinumgenomes.html): 
 
 ```
@@ -249,7 +267,7 @@ SAMPLE=NA12878
 
 
 
-## 4.2&nbsp; VCF Data
+## 5.2&nbsp; VCF Data
 Apply the algorithm: 
 ```
 . ${SCRIPT_DIR}/loop_${TOOL}.WGS.VCF.sh ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf 1 2 ${SOURCE} ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF
@@ -284,7 +302,7 @@ FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF/ -iname "${SAMPLE}.${SOURCE}
 ```
 
 
-## 4.3&nbsp; BED Data
+## 5.3&nbsp; BED Data
 Convert VCF data to BED data
 ```
 bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.vcf | awk -v OFS="\t" -v REF=${SOURCE} '{print $1,$2-1,$2,$1 "_" $2-1 "_" $3 "_" $4 "_" REF }'  > ${SOURCE}/${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}.bed
@@ -321,7 +339,7 @@ FILES=( $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED/ -iname "${SAMPLE}.${SOURCE}
 ```
 
 
-## 4.4&nbsp; Compare Data
+## 5.4&nbsp; Compare Data
 The VCF-based data should be contained within the BED-based data, with differences arising only due to mis-matching reference alleles. 
 To confirm this, we take the intersection of each of the categories from the BED-based data with the VCF-based data, and take the jaccard index of this intersection with the VCF-based data.
 This proportion overlap should be equal to 1 for all files, indicating that the VCF-based data is a subset of the BED-based data. 
