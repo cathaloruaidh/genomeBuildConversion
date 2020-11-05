@@ -16,7 +16,7 @@ Navigation:
 
 
 # 2&nbsp; Quick Start
-First, download the BED file containing CUP positions for either GRCh37 or GRCh38: 
+First, download the BED file containing novel CUP positions for either GRCh37 or GRCh38: 
 ```
 wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/master/CUP_FILES/FASTA_BED.ALL_GRCh37.novel_CUPs.bed
 # or 
@@ -31,6 +31,8 @@ vcftools --vcf INPUT.vcf --exclude-bed FASTA_BED.ALL_GRCh3N.novel_CUPs.bed --rec
 ```
 
 The variants in the resulting VCF file are now stable to conversion. 
+Note that some variants may still fail the conversion process, due to their positions not being present in the target build. 
+This is expected behaviour and is handled by the conversion tools. 
 
 
 # 3&nbsp; Set Up
