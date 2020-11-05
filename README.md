@@ -6,17 +6,18 @@ BED files describing these conversion-unstable positions (CUPs) are provided, as
 These positions are determined by the chain file, and are the same regardless of the conversion tool. 
 Pre-excluding SNVs in these regions before converting between builds removes all unstable behaviour. 
 
-If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). If you use the exclude files or this algorithm in your publication, please cite the following paper:
+If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). 
+[//]: # If you use the exclude files or this algorithm in your publication, please cite the following paper:
 
 Navigation: 
-- [Quick Start](#2-quick-start)
-- [Installation](#3-set-up) 
+- [CUP Bed Files](#2-cup-bed-files)
+- [Installation](#3-installation) 
 - [Full Genome Data](#4-full-genome-data)
 - [WGS Example](#5-wgs-example) (experimental)
 
 
-# 2&nbsp; Quick Start
-First, download the BED file containing novel CUP positions for either GRCh37 or GRCh38: 
+# 2&nbsp; CUP Bed Files
+BED file containing novel CUP positions for either GRCh37 or GRCh38 can be downloaded directly here: 
 ```
 wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/master/CUP_FILES/FASTA_BED.ALL_GRCh37.novel_CUPs.bed
 # or 
@@ -35,7 +36,9 @@ Note that some variants may still fail the conversion process, due to their posi
 This is expected behaviour and is handled by the conversion tools. 
 
 
-# 3&nbsp; Set Up
+# 3&nbsp; Installation
+The remaining code in the README may be adapted to generate CUP files for other genome builds, or to evaluate the process as a proof of principle on sample WGS data. 
+
 ## 3.1&nbsp; Notes
 - Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Additionally, `bwa` is required for the WGS example. 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
@@ -46,7 +49,7 @@ This is expected behaviour and is handled by the conversion tools.
 
 
 
-## 3.2&nbsp; Installation
+## 3.2&nbsp; Initialise
 Download the resource material and initialise:
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
