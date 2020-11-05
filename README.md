@@ -24,7 +24,7 @@ wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/maste
 
 ```
 
-Variants in a VCF file at these positions can be removed using, for example. `vcftools` (substitute the appropriate VCF file name and BED genome source build):
+Variants in a VCF file at these positions can be removed using, for example, `vcftools` (substitute the appropriate VCF file name and BED genome source build):
 ```
 vcftools --vcf INPUT.vcf --exclude-bed FASTA_BED.ALL_GRCh3N.novel_CUPs.bed --recode --recode-INFO-all --out INPUT.stable
 
