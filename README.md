@@ -13,9 +13,11 @@ If you use the exclude files or this algorithm in your publication, please cite 
 
 Navigation: 
 - [CUP Bed Files](#2-cup-bed-files)
-- [Installation](#3-installation) 
+- [Algorithm](#3-algorithm) 
 - [Full Genome Data](#4-full-genome-data)
 - [WGS Example](#5-wgs-example) (experimental)
+
+Note that sections 3-5 below need only be applied if a user wishes to re-generate the CUP files for validation, or to apply this process to genomes other than GRCh37 and GRCh38. 
 
 
 # 2&nbsp; CUP Bed Files
@@ -38,7 +40,7 @@ Note that some variants may still fail the conversion process, due to their posi
 This is expected behaviour and is handled by the conversion tools. 
 
 
-# 3&nbsp; Installation
+# 3&nbsp; Algorithm
 The remaining code in the README may be adapted to generate CUP files for other genome builds, or to evaluate the process as a proof of principle on sample WGS data. 
 
 ## 3.1&nbsp; Notes
@@ -51,7 +53,7 @@ The remaining code in the README may be adapted to generate CUP files for other 
 
 
 
-## 3.2&nbsp; Initialise
+## 3.2&nbsp; Installation
 Download the resource material and initialise:
 ```
 git clone https://github.com/cathaloruaidh/genomeBuildConversion.git
