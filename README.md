@@ -59,8 +59,8 @@ This is expected behaviour and is handled by the conversion tools.
     * `bcftools`
     * `vcftools` 
     * `bgzip` and `tabix`
-    * `picard` (supplied in REFERENCE directory)
-    * `GATK` (supplied in REFERENCE directory)
+    * `picard` (supplied in SCRIPTS directory)
+    * `GATK` (supplied in SCRIPTS directory)
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
 - This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
