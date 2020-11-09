@@ -53,12 +53,12 @@ This is expected behaviour and is handled by the conversion tools.
     * `liftOver`
     * `CrossMap`
     * `bedtools`
-    * `bcftools`
-    * `vcftools` 
-    * `bgzip` and `tabix`
     * `GNU parallel` (optional)
 - Additionally, the following are required for the WGS example
     * `samtools` 
+    * `bcftools`
+    * `vcftools` 
+    * `bgzip` and `tabix`
     * `picard` (supplied in REFERENCE directory)
     * `GATK` (supplied in REFERENCE directory)
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
