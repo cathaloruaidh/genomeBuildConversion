@@ -57,7 +57,7 @@ This is expected behaviour and is handled by the conversion tools.
     * `vcftools` 
     * `GNU parallel` (optional)
 - Additionally, the following are required for the WGS example
-    * `bwa` 
+    * `samtools` 
     * `picard` (supplied in REFERENCE directory)
     * `GATK` (supplied in REFERENCE directory)
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
