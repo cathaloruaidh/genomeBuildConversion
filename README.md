@@ -134,7 +134,7 @@ date ;
 parallel --plus -j 12 --colsep '\t' "${SCRIPT_DIR}/createInputBed.sh {1} {2} {3} ${SOURCE}" :::: ${REGIONS}
 
 ```
-If you are working on a different genome that GRCh37 or GRCh38, you can supply alternate REGION files in the REFERENCE directory. 
+If you are working on a different genome than GRCh37 or GRCh38, you can supply alternate REGION files in the REFERENCE directory. 
 
 
 ## 4.2&nbsp; Apply Algorithm
