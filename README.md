@@ -16,19 +16,25 @@ Navigation:
 - [CUP Bed Files](#2-cup-bed-files)
 - [Algorithm](#3-algorithm) 
 - [Full Genome Data](#4-full-genome-data)
-- [WGS Example](#5-wgs-example) (experimental)
+- [WGS Example](#5-wgs-example)
 
 Note that sections 3-5 below need only be applied if a user wishes to re-generate the CUP files for validation, or to apply this process to genomes other than GRCh37 and GRCh38. 
 
 
-# 2&nbsp; CUP Bed Files
+# 2&nbsp; Novel CUP Bed Files
 BED file containing novel CUP positions for either GRCh37 or GRCh38 can be downloaded directly here: 
 ```
+# GRCh37
 wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/master/CUP_FILES/FASTA_BED.ALL_GRCh37.novel_CUPs.bed
-# or 
+
+```
+
+```
+# GRCh38
 wget https://raw.githubusercontent.com/cathaloruaidh/genomeBuildConversion/master/CUP_FILES/FASTA_BED.ALL_GRCh38.novel_CUPs.bed
 
 ```
+
 
 SNVs at these positions can be removed from a VCF file using, for example, `vcftools` (substitute the appropriate VCF file name and BED genome source build):
 ```
@@ -43,7 +49,16 @@ This is expected behaviour and is handled by the conversion tools.
 
 # 3&nbsp; Algorithm
 ## 3.1&nbsp; Notes
-- Prerequisites: `liftOver`, `CrossMap`, `bedtools` and `GNU parallel`. Additionally, `bwa` is required for the WGS example. 
+- Prerequisites: 
+    * `liftOver`
+    * `CrossMap`
+    * `bedtools`
+    * `bcftools`
+    * `vcftools` 
+    * `picard` (supplied in REFERENCE directory)
+    * `GATK` (supplied in REFERENCE directory)
+    * `GNU parallel` (optional)
+    * `bwa` (for the WGS example). 
 - Reference FASTA files are not included due to file size, but are required for the application to the real WGS data. Code to download and index these reference files is provided below. 
 - This process assumes `chr1, chr2, ..., chrX, chrY` nomenclature. 
 - The input BED files for the full-genome search for one build are ~150GB in size. Once the algorithm is applied, all files can take up to 1.5TB in size. 
@@ -179,7 +194,7 @@ for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed 
 
 
 # 5&nbsp; WGS Example
-Note, this section is currently experimental. 
+Note, the code in this section is currently experimental. 
 As a proof of principle, a modified version of the above algorithm can be applied to WGS data. 
 `liftOver` is implemented by the `LiftoverVCF` module from `picard`, since `liftOver` cannot directly process VCF files. 
 The VCF information can be collapsed down to position information only as BED files, and the original algorithm run. 
