@@ -55,6 +55,7 @@ This is expected behaviour and is handled by the conversion tools.
     * `bedtools`
     * `bcftools`
     * `vcftools` 
+    * `bgzip` and `tabix`
     * `GNU parallel` (optional)
 - Additionally, the following are required for the WGS example
     * `samtools` 
@@ -186,7 +187,7 @@ cat FASTA_BED.${TOOL}.ALL_${SOURCE}*jump*.bed FASTA_BED.${TOOL}.ALL_${SOURCE}*re
 To confirm that both `liftOver` and `CrossMap` give identical output for each of the CUP caregoties, we calculate the jaccard indices between the files:
 ```
 cd ${MAIN_DIR}/COMBINE
-for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed -e 's/liftOver/CrossMap/g' ) ; echo -e "${LIFT}\t$( bedtools jaccard -a ${LIFT} -b ${CROSS} | cut -f3 | tail -1 )" ; echo  ; done | column -t 
+for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed -e 's/liftOver/CrossMap/g' ) ; NAME=$( echo ${LIFT} | sed -e 's/liftOver\.//g' ) ; echo -e "${NAME}\t$( bedtools jaccard -a ${LIFT} -b ${CROSS} | cut -f3 | tail -1 )" ; echo  ; done | column -t 
 
 ```
 
@@ -222,7 +223,8 @@ wget https://s3.eu-central-1.amazonaws.com/platinum-genomes/2017-1.0/hg38/small_
 
 ```
 
-Annotate the variants with unique identifier and extract bi-allelic SNVs subset to confident regions: 
+Note that the Illumina Platinum Genomes provides a list of "Confident Regions" for validated variant sites as well as high-confidence homozygous-reference sites. 
+Annotate the variants with unique identifier and extract bi-allelic SNVs, subset to the "Confident Regions"@
 ```
 for SAMPLE in NA12877 NA12878
 do 
