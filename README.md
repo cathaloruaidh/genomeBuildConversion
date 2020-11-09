@@ -272,7 +272,6 @@ samtools faidx ${REF_DIR}/GRCh37.fa
 java -jar ${SCRIPT_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh37.fa OUTPUT=${REF_DIR}/GRCh37.dict
 
 wget ftp://ftp-trace.ncbi.nlm.nih.gov/1000genomes/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa -O ${REF_DIR}/GRCh38.fa
-
 samtools faidx ${REF_DIR}/GRCh38.fa
 java -jar ${SCRIPT_DIR}/picard.jar CreateSequenceDictionary REFERENCE=${REF_DIR}/GRCh38.fa OUTPUT=${REF_DIR}/GRCh38.dict
 
