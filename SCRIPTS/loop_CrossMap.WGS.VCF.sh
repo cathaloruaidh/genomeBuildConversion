@@ -131,7 +131,7 @@ do
 	
 	if [[ -f ${TARGET_REMOVE} ]]
 	then
-		cat <( grep ^# ${TARGET_SORT} ) <(grep -v ^# ${TARGET_SORT} | ~/bin/grep -v -w -f ${TARGET_REMOVE}  ) > ${TARGET_PASS}
+		cat <( grep ^# ${TARGET_SORT} ) <(grep -v ^# ${TARGET_SORT} | grep -v -w -f ${TARGET_REMOVE}  ) > ${TARGET_PASS}
 	else
 		cp ${TARGET_SORT} ${TARGET_PASS}
 	fi
@@ -164,7 +164,7 @@ do
 	echo -e "Get Pass \n\n"
 	if [[ -f ${SOURCE_REMOVE} ]]
 	then
-		cat <( grep ^# ${SOURCE_SORT} ) <(grep -v ^# ${SOURCE_SORT} | ~/bin/grep -v -w -f ${SOURCE_REMOVE}  ) > ${SOURCE_PASS}
+		cat <( grep ^# ${SOURCE_SORT} ) <(grep -v ^# ${SOURCE_SORT} | grep -v -w -f ${SOURCE_REMOVE}  ) > ${SOURCE_PASS}
 	else
 		cp ${SOURCE_SORT} ${SOURCE_PASS}
 	fi
