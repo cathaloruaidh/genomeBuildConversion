@@ -13,7 +13,7 @@ If you use the exclude files or this algorithm in your publication, please cite 
 --->
 
 Navigation: 
-- [CUP Bed Files](#2-cup-bed-files)
+- [CUP Bed Files](#2-novel-cup-bed-files)
 - [Algorithm](#3-algorithm) 
 - [Full Genome Data](#4-full-genome-data)
 - [WGS Example](#5-wgs-example)
