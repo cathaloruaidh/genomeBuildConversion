@@ -53,7 +53,7 @@ else
 fi
 
 
-cp ${FILE} ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.bed
+cp ${FILE} ${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_0.pass.bed
 
 
 for i in $(seq ${FROM} ${TO} )
@@ -87,9 +87,16 @@ do
 
 	# Convert the REJECT to an EXTRACT 
 	echo "Get Reject"
-	grep -v '^#' ${SOURCE_REJECT} | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${SOURCE_EXTRACT}
+
+    if [[ ! -f ${SOURCE_REJECT} ]]
+    then
+        grep -v '^#' ${SOURCE_REJECT} | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${SOURCE_EXTRACT}
+    else
+        touch ${SOURCE_EXTRACT}
+    fi
+
 
 	echo "Get Jump"
 	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' ${TARGET_OUT} | \
@@ -109,9 +116,15 @@ do
 
 	# Convert the REJECT to an EXTRACT 
 	echo "Get Reject"
-	grep -v '^#' ${TARGET_REJECT} | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${TARGET_EXTRACT}
+    
+    if [[ ! -f ${TARGET_REJECT} ]]
+    then
+        grep -v '^#' ${TARGET_REJECT} | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${TARGET_EXTRACT}
+    else
+        touch ${TARGET_EXTRACT}
+    fi
 
 
 	echo -e "\nFinished with ${TARGET} to ${SOURCE}. \n"

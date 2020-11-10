@@ -53,7 +53,7 @@ else
 fi
 
 
-cp ${FILE} ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.vcf
+cp ${FILE} ${OUT_DIR}/${PREFIX}_CrossMap_${SOURCE}_0.pass.vcf
 
 
 for i in $(seq ${FROM} ${TO} )
@@ -104,23 +104,35 @@ do
 
 	# Convert the REJECT file to EXTRACT and MISMATCH files 
 	echo -e "Get Reject\n\n"
-	grep -v "^#" ${TARGET_OUT}.unmap | \
-	grep 'Unmap' | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' | \
-	bedtools sort -i - > ${SOURCE_EXTRACT}
+
+    if [[ ! -f ${TARGET_OUT}.unmap ]]
+    then 
+        grep -v "^#" ${TARGET_OUT}.unmap | \
+        grep 'Unmap' | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' | \
+        bedtools sort -i - > ${SOURCE_EXTRACT}
+    else
+        touch ${SOURCE_EXTRACT}
+    fi
 
 	# include variants with ambiguous reference alleles
 	echo -e "Get MisMatch\n\n"
-	grep -v "^#" ${TARGET_OUT}.unmap | \
-	grep "REF==ALT" | \
-	cat ${TARGET_OUT}.refAllele - | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' | \
-	bedtools sort -i - > ${SOURCE_MISMATCH}
-	
+
+    if [[ ! -f ${TARGET_OUT}.unmap ]]
+    then 
+        grep -v "^#" ${TARGET_OUT}.unmap | \
+        grep "REF==ALT" | \
+        cat ${TARGET_OUT}.refAllele - | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' | \
+        bedtools sort -i - > ${SOURCE_MISMATCH}
+    else
+        touch ${SOURCE_MISMATCH}
+    fi
+
 	echo -e "Get ChrJump1\n\n"
 	bcftools query -f "%CHROM\t%POS\t%ID\n" ${TARGET_SORT} | \
 	awk -v OFS="\t" '{tmp=$3 ; gsub(/_/, "\t", $3) ; print $1,$2,tmp,$3}' | \
@@ -172,21 +184,33 @@ do
 
 	# Convert the REJECT to an EXTRACT 
 	echo -e "Get Reject\n\n"
-	grep -v "^#" ${SOURCE_OUT}.unmap | \
-	grep 'Unmap' | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${TARGET_EXTRACT}
+
+    if [[ ! -f ${SOURCE_OUT}.unmap ]]
+    then 
+        grep -v "^#" ${SOURCE_OUT}.unmap | \
+        grep 'Unmap' | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${TARGET_EXTRACT}
+    else
+        touch ${TARGET_EXTRACT}
+    fi
+
 
 	echo -e "Get Mismatch\n\n"
-	grep -v "^#" ${SOURCE_OUT}.unmap | \
-	grep "REF==ALT" | \
-	cat ${SOURCE_OUT}.refAllele - | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' | \
-	bedtools sort -i - > ${TARGET_MISMATCH}
 
+    if [[ ! -f ${SOURCE_OUT}.unmap ]]
+    then 
+        grep -v "^#" ${SOURCE_OUT}.unmap | \
+        grep "REF==ALT" | \
+        cat ${SOURCE_OUT}.refAllele - | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' | \
+        bedtools sort -i - > ${TARGET_MISMATCH}
+    else
+        touch ${TARGET_MISMATCH}
+    fi
 
 	echo -e "\nFinished with ${TARGET} to ${SOURCE}. \n"
 	

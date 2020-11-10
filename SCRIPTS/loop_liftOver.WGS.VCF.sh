@@ -53,7 +53,7 @@ else
 fi
 
 
-cp ${FILE} ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.vcf
+cp ${FILE} ${OUT_DIR}/${PREFIX}_liftOver_${SOURCE}_0.pass.vcf
 
 
 for i in $(seq ${FROM} ${TO} )
@@ -101,18 +101,31 @@ do
 
 	# Convert the REJECT file to EXTRACT and MISMATCH files 
 	echo -e "Get Reject\n\n"
-	grep -v "^#" ${SOURCE_REJECT} | \
-	grep 'NoTarget' | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${SOURCE_EXTRACT}
+    
+    if [[ ! -f ${SOURCE_REJECT} ]]
+    then
+        grep -v "^#" ${SOURCE_REJECT} | \
+        grep 'NoTarget' | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${SOURCE_EXTRACT}
+    else
+        touch ${SOURCE_EXTRACT}
+    fi
+
 
 	echo -e "Get MisMatch\n\n"
-	grep -v "^#" ${SOURCE_REJECT} | \
-	grep 'MismatchedRefAllele' | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${SOURCE_MISMATCH}
+
+    if [[ ! -f ${SOURCE_REJECT} ]]
+    then
+        grep -v "^#" ${SOURCE_REJECT} | \
+        grep 'MismatchedRefAllele' | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${SOURCE_MISMATCH}
+    else
+        ${SOURCE_MISMATCH}
+    fi
 
 	echo -e "Get ChrJump1\n\n"
 	bcftools query -f "%CHROM\t%POS\t%ID\n" ${TARGET_OUT} | \
@@ -156,6 +169,7 @@ do
 
 
 	echo -e "Get Pass \n\n"
+    
 	if [[ -f ${SOURCE_REMOVE} && $( wc -l ${SOURCE_REMOVE} | cut -f1 ) > 0 ]]
 	then
 		java -Djava.io.tmpdir=${OUT_DIR} -jar ${SCRIPT_DIR}/GenomeAnalysisTK_3.8.jar \
@@ -171,16 +185,29 @@ do
 
 	# Convert the REJECT to an EXTRACT 
 	echo -e "Get Reject\n\n"
-	grep -v "^#" ${TARGET_REJECT} | grep 'NoTarget' | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${TARGET_EXTRACT}
+    
+    if [[ ! -f ${TARGET_REJECT} ]]
+    then
+        grep -v "^#" ${TARGET_REJECT} | grep 'NoTarget' | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${TARGET_EXTRACT}
+    else
+        touch ${TARGET_EXTRACT}
+    fi
+    
 
 	echo -e "Get Mismatch\n\n"
-	grep -v "^#" ${TARGET_REJECT} | grep 'MismatchedRefAllele' | \
-	awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${TARGET_MISMATCH}
+    
+    if [[ ! -f ${TARGET_REJECT} ]]
+    then
+        grep -v "^#" ${TARGET_REJECT} | grep 'MismatchedRefAllele' | \
+        awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6-1,$6,$4}' > ${TARGET_MISMATCH}
+    else
+        touch ${TARGET_MISMATCH}
+    fi
 
 
 	echo -e "\nFinished with ${TARGET} to ${SOURCE}. \n"

@@ -53,7 +53,7 @@ else
 fi
 
 
-cp ${FILE} ${OUT_DIR}/${PREFIX}_${SOURCE}_0.pass.bed
+cp ${FILE} ${OUT_DIR}/${PREFIX}_CrossMap_${SOURCE}_0.pass.bed
 
 
 for i in $(seq ${FROM} ${TO} )
@@ -92,9 +92,15 @@ do
 
 	# Get the EXTRACT file from the OUT file
 	echo "Get REJECT"
-	grep 'Unmap' ${TARGET_OUT} | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${SOURCE_EXTRACT}
+    
+    if [[ ! -f ${TARGET_OUT}.unmap ]]
+    then 
+        grep 'Unmap' ${TARGET_OUT} | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${SOURCE_EXTRACT}
+    else
+        
+    fi
 
 
 	echo -e "\nFinished with ${SOURCE} to ${TARGET}. \n"
