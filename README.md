@@ -305,9 +305,9 @@ Apply the algorithm:
 Check that there are no entries in the files of CUPs for the second iteration. 
 All commands should return zeroes for the files. 
 ```
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_*_2.*jump*" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TOOL}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TOOL}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/VCF -iname "${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TOOL}_*_2.*jump*" ) ; do wc -l ${FILE} ; done
 
 ```
 
@@ -346,9 +346,9 @@ Apply the algorithm:
 Check that there are no entries in the files of CUPs for the second iteration. 
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 ```
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${TOOL}.${SOURCE}.annotate.bi_SNV.${CATEGORY}__2.*jump*" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TOOL}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TOOL}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find ${SOURCE}/${CATEGORY}/${SAMPLE}/BED -iname "${SAMPLE}.${SOURCE}.annotate.bi_SNV.${CATEGORY}_${TOOL}_*_2.*jump*" ) ; do wc -l ${FILE} ; done
 
 ```
 
