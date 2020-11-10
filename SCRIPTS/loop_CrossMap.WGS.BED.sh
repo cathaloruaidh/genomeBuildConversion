@@ -93,13 +93,13 @@ do
 	# Get the EXTRACT file from the OUT file
 	echo "Get REJECT"
     
-    if [[ ! -f ${TARGET_OUT}.unmap ]]
+    if [[ -f ${TARGET_OUT}.unmap ]]
     then 
-        grep 'Unmap' ${TARGET_OUT} | \
+        grep 'Unmap' ${TARGET_OUT}.unmap | \
         awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
         awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${SOURCE_EXTRACT}
     else
-        
+        touch ${SOURCE_EXTRACT}
     fi
 
 
@@ -117,10 +117,14 @@ do
 	awk -v OFS="\t" -v PASS=${SOURCE_PASS} -v JUMPCHR=${SOURCE_JUMP_CHR} -v JUMPPOS=${SOURCE_JUMP_POS}  '{ if($1 != $5) {print $5,$6,$6+1,$4 > JUMPCHR}  else if($2 != $6) {print $5,$6,$6+1,$4 > JUMPPOS} else {print $5,$6,$6+1,$4 > PASS} }'
 
 	# Get the EXTRACT file from the OUT file
-	grep 'Unmap' ${SOURCE_OUT} | \
-	awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
-	awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${TARGET_EXTRACT}
-
+    if [[ -f ${SOURCE_OUT}.unmap ]]
+    then 
+        grep 'Unmap' ${SOURCE_OUT} | \
+        awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
+        awk -v OFS="\t" '{print $5,$6,$6+1,$4}' > ${TARGET_EXTRACT}
+    else
+        touch ${TARGET_EXTRACT}
+    fi
 
 	echo -e "\nFinished with ${TARGET} to ${SOURCE}. \n"
 	

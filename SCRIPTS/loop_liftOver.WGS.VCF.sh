@@ -102,7 +102,7 @@ do
 	# Convert the REJECT file to EXTRACT and MISMATCH files 
 	echo -e "Get Reject\n\n"
     
-    if [[ ! -f ${SOURCE_REJECT} ]]
+    if [[ -f ${SOURCE_REJECT} ]]
     then
         grep -v "^#" ${SOURCE_REJECT} | \
         grep 'NoTarget' | \
@@ -116,7 +116,7 @@ do
 
 	echo -e "Get MisMatch\n\n"
 
-    if [[ ! -f ${SOURCE_REJECT} ]]
+    if [[ -f ${SOURCE_REJECT} ]]
     then
         grep -v "^#" ${SOURCE_REJECT} | \
         grep 'MismatchedRefAllele' | \
@@ -186,7 +186,7 @@ do
 	# Convert the REJECT to an EXTRACT 
 	echo -e "Get Reject\n\n"
     
-    if [[ ! -f ${TARGET_REJECT} ]]
+    if [[ -f ${TARGET_REJECT} ]]
     then
         grep -v "^#" ${TARGET_REJECT} | grep 'NoTarget' | \
         awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \
@@ -199,7 +199,7 @@ do
 
 	echo -e "Get Mismatch\n\n"
     
-    if [[ ! -f ${TARGET_REJECT} ]]
+    if [[ -f ${TARGET_REJECT} ]]
     then
         grep -v "^#" ${TARGET_REJECT} | grep 'MismatchedRefAllele' | \
         awk -v OFS="\t" '{print $1,$2-1,$2,$3}' | \

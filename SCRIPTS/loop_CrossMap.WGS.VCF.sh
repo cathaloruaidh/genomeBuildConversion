@@ -105,7 +105,7 @@ do
 	# Convert the REJECT file to EXTRACT and MISMATCH files 
 	echo -e "Get Reject\n\n"
 
-    if [[ ! -f ${TARGET_OUT}.unmap ]]
+    if [[ -f ${TARGET_OUT}.unmap ]]
     then 
         grep -v "^#" ${TARGET_OUT}.unmap | \
         grep 'Unmap' | \
@@ -120,7 +120,7 @@ do
 	# include variants with ambiguous reference alleles
 	echo -e "Get MisMatch\n\n"
 
-    if [[ ! -f ${TARGET_OUT}.unmap ]]
+    if [[ -f ${TARGET_OUT}.unmap ]]
     then 
         grep -v "^#" ${TARGET_OUT}.unmap | \
         grep "REF==ALT" | \
@@ -185,7 +185,7 @@ do
 	# Convert the REJECT to an EXTRACT 
 	echo -e "Get Reject\n\n"
 
-    if [[ ! -f ${SOURCE_OUT}.unmap ]]
+    if [[ -f ${SOURCE_OUT}.unmap ]]
     then 
         grep -v "^#" ${SOURCE_OUT}.unmap | \
         grep 'Unmap' | \
@@ -199,7 +199,7 @@ do
 
 	echo -e "Get Mismatch\n\n"
 
-    if [[ ! -f ${SOURCE_OUT}.unmap ]]
+    if [[ -f ${SOURCE_OUT}.unmap ]]
     then 
         grep -v "^#" ${SOURCE_OUT}.unmap | \
         grep "REF==ALT" | \

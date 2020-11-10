@@ -88,7 +88,7 @@ do
 	# Convert the REJECT to an EXTRACT 
 	echo "Get Reject"
 
-    if [[ ! -f ${SOURCE_REJECT} ]]
+    if [[ -f ${SOURCE_REJECT} ]]
     then
         grep -v '^#' ${SOURCE_REJECT} | \
         awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
@@ -117,7 +117,7 @@ do
 	# Convert the REJECT to an EXTRACT 
 	echo "Get Reject"
     
-    if [[ ! -f ${TARGET_REJECT} ]]
+    if [[ -f ${TARGET_REJECT} ]]
     then
         grep -v '^#' ${TARGET_REJECT} | \
         awk -v OFS="\t" '{tmp=$4 ; gsub(/_/, "\t", $4) ; print $1,$2,$3,tmp,$4}' | \
