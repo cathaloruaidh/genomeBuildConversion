@@ -384,8 +384,8 @@ for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGOR
 ```
 
 We can confirm that pre-excluding variants at novel CUP positions (i.e. the `stable` data) prior to conversion results in the same list of variants as applying the algorithm to the original, unfiltered data, and removing variants at novel CUPs. 
-In the output for the following, note that the Venn-Diagram numbers should indicate all variants are shared by both files. 
-Alternatively, in the Genotype Comparison Summary, the non-reference discordance rate should be zero. 
+`vcf-compare` is used to determine if the two VCF files have the same data, in particular the Genotype Comparison Summary. 
+In the output of the following, the discordance rate (final column) shold be zero for all classes of variants. 
 ```
 bgzip -c ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf > ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz
 tabix -f ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz
@@ -393,7 +393,7 @@ tabix -f ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.or
 bgzip -c ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf > ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz
 tabix -f ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz
 
-vcf-compare -g ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz | grep ^SN | cut -f 2-
+vcf-compare -g ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz ${SOURCE}/stable/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.stable_${TOOL}_${TARGET}_1.pass.vcf.gz | grep -E '^#GS|^GS'
 
 ```
 
