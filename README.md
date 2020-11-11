@@ -385,7 +385,7 @@ for BED in ${SOURCE}/${CATEGORY}/${SAMPLE}/${SAMPLE}.${TOOL}.${SOURCE}.${CATEGOR
 ```
 
 We can confirm that pre-excluding variants at novel CUP positions (i.e. the `stable` data) prior to conversion results in the same list of variants as applying the algorithm to the original, unfiltered data, and removing variants at novel CUPs. 
-In the output for the following, note that the Venn-Diagram numbers should indeicate all variants are shared by both files. 
+In the output for the following, note that the Venn-Diagram numbers should indicate all variants are shared by both files. 
 Alternatively, in the Genotype Comparison Summary, the non-reference discordance rate should be zero. 
 ```
 bgzip -c ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf > ${SOURCE}/original/${SAMPLE}/VCF/${SAMPLE}.${SOURCE}.annotate.bi_SNV.original_${TOOL}_${TARGET}_2.pass.vcf.gz
