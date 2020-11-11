@@ -194,7 +194,6 @@ for LIFT in FASTA_BED.liftOver.ALL_${SOURCE}.* ; do CROSS=$( echo ${LIFT} | sed 
 
 
 # 5&nbsp; WGS Example
-Note, the code in this section is currently experimental. 
 As a proof of principle, a modified version of the above algorithm can be applied to WGS data. 
 `liftOver` is implemented by the `LiftoverVCF` module from `picard`, since `liftOver` cannot directly process VCF files. 
 The VCF information can be collapsed down to position information only as BED files, and the original algorithm run. 
