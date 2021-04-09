@@ -9,7 +9,7 @@ BED files for these positions may be downloaded in Section 2 below.
 
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). If you use the exclude files or this algorithm in your publication, please cite the following paper:
 
-Ormond C, Ryan NM, Corvin A and Heron EA, "Converting single nucleotide variants between genome builds: from cautionary tale to solution", *Briefings in Bioinformatics*, 2021. (DOI:https://doi.org/10.1093/bib/bbab069)
+Ormond C, Ryan NM, Corvin A and Heron EA, "Converting single nucleotide variants between genome builds: from cautionary tale to solution", *Briefings in Bioinformatics*, 2021. (PMID: 33822888; DOI: https://doi.org/10.1093/bib/bbab069)
 
 
 Navigation: 
