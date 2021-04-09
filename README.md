@@ -8,9 +8,10 @@ Pre-excluding SNVs in these regions before converting between builds removes all
 BED files for these positions may be downloaded in Section 2 below. 
 
 If you have any queries or feedback, please contact the [author](mailto:cathalormond@gmail.com). 
-<!---
-If you use the exclude files or this algorithm in your publication, please cite the following paper:
---->
+
+If you use the exclude files or this algorithm in your publication, please cite the following paper: 
+Ormond et al., "Converting single nucleotide variants between genome builds: from cautionary tale to solution", *Briefings in Bioinformatics*, 2021. 
+
 
 Navigation: 
 - [CUP Bed Files](#2-novel-cup-bed-files)
