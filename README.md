@@ -160,8 +160,8 @@ Check if there are entries in the files of unstable positions for the second ite
 The first two commands should return zeroes for all files, and the third command should return nothing. 
 
 ```
-for FILE in $( find *_${SOURCE} -iname "*${TOOL}_GRCh37_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
-for FILE in $( find *_${SOURCE} -iname "*${TOOL}_GRCh38_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find *_${SOURCE} -iname "*${TOOL}_${SOURCE}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
+for FILE in $( find *_${SOURCE} -iname "*${TOOL}_${TARGET}_2.reject.extract.bed" ) ; do wc -l ${FILE} ; done
 for FILE in $( find *_${SOURCE} -iname '*${TOOL}*_2.jump*' ) ; do wc -l ${FILE} ; done
 
 ```
