@@ -88,7 +88,7 @@ Run for GRCh37:
 SOURCE=GRCh37
 TARGET=GRCh38
 export SOURCE TARGET
-REGIONS=${REF_DIR}/GRCh37.region.Standard.bed
+REGIONS=${REF_DIR}/${SOURCE}.region.Standard.bed
 
 ```
 
@@ -97,7 +97,7 @@ Run for GRCh38:
 SOURCE=GRCh38
 TARGET=GRCh37
 export SOURCE TARGET
-REGIONS=${REF_DIR}/GRCh38.regions.Standard.bed 
+REGIONS=${REF_DIR}/${SOURCE}.regions.Standard.bed 
 
 ```
 
